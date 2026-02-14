@@ -33,6 +33,9 @@ jobs:
           git add README.md
           git diff --cached --quiet || (git commit -m "docs: update slides list [skip ci]" && git push)
 
+      - name: Install pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
       - name: Build index.html from README
         run: pandoc README.md --standalone --metadata title="Slides" --include-in-header=scripts/index-style.html -o index.html
 
