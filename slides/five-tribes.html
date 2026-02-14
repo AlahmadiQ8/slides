@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Five Tribes: The Djinns of Naqala</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Philosopher:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* =============================================
+       FIVE TRIBES - ARABIAN NIGHTS THEME
+       ============================================= */
+
+    :root {
+      --r-background-color: #1a0e2e;
+      --r-main-font: 'Philosopher', 'Georgia', serif;
+      --r-main-font-size: 26px;
+      --r-main-color: #E8D5B7;
+      --r-heading-font: 'Cinzel Decorative', 'Georgia', serif;
+      --r-heading-color: #D4A843;
+      --r-heading-font-weight: 700;
+      --r-heading-line-height: 1.2;
+      --r-heading-letter-spacing: 0.02em;
+      --r-heading-text-transform: none;
+      --r-heading-text-shadow: 0 0 20px rgba(212,168,67,0.3);
+      --r-heading1-text-shadow: 0 0 30px rgba(212,168,67,0.4);
+      --r-heading1-size: 2.0em;
+      --r-heading2-size: 1.4em;
+      --r-heading3-size: 1.1em;
+      --r-heading4-size: 0.95em;
+      --r-block-margin: 14px;
+      --r-heading-margin: 0 0 20px 0;
+      --r-code-font: 'Cascadia Code', 'Consolas', monospace;
+      --r-link-color: #D4A843;
+      --r-link-color-dark: #b8922e;
+      --r-link-color-hover: #f0c85a;
+      --r-selection-background-color: rgba(212,168,67,0.3);
+      --r-selection-color: #fff;
+
+      --ft-purple: #2D1B4E;
+      --ft-gold: #D4A843;
+      --ft-sand: #E8D5B7;
+      --ft-terracotta: #C46A3F;
+      --ft-teal: #1B8A8A;
+      --ft-deep-bg: #1a0e2e;
+      --ft-dark-purple: #0f0720;
+    }
+
+    /* --- Gold shimmer animation --- */
+    @keyframes goldShimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes subtleGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(212,168,67,0.3); }
+      50% { text-shadow: 0 0 40px rgba(212,168,67,0.6), 0 0 80px rgba(212,168,67,0.2); }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* --- Geometric Islamic pattern overlay --- */
+    .reveal .slides section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image:
+        linear-gradient(30deg, rgba(212,168,67,0.03) 12%, transparent 12.5%, transparent 87%, rgba(212,168,67,0.03) 87.5%),
+        linear-gradient(150deg, rgba(212,168,67,0.03) 12%, transparent 12.5%, transparent 87%, rgba(212,168,67,0.03) 87.5%),
+        linear-gradient(30deg, rgba(212,168,67,0.03) 12%, transparent 12.5%, transparent 87%, rgba(212,168,67,0.03) 87.5%),
+        linear-gradient(150deg, rgba(212,168,67,0.03) 12%, transparent 12.5%, transparent 87%, rgba(212,168,67,0.03) 87.5%);
+      background-size: 80px 140px;
+      background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .reveal .slides section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- Global --- */
+    .reveal .slides {
+      text-align: left;
+    }
+
+    .reveal .slides section,
+    .reveal .slides section > section {
+      box-sizing: border-box;
+      padding: 48px 56px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .reveal h1, .reveal h2, .reveal h3,
+    .reveal h4, .reveal h5, .reveal h6 {
+      text-align: left;
+      text-transform: none;
+    }
+
+    .reveal h2 {
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(212,168,67,0.3);
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #D4A843, #f0d078, #D4A843);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 4s linear infinite;
+    }
+
+    /* --- Title slide --- */
+    .reveal .slides section.title-slide {
+      text-align: center;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .reveal .title-slide h1 {
+      text-align: center;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #c9943a, #f0d078, #D4A843, #f0d078, #c9943a);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 6s linear infinite;
+    }
+
+    .reveal .title-slide p {
+      text-align: center;
+      color: var(--ft-sand);
+    }
+
+    /* --- Ornate border for title/closing slides --- */
+    .ornate-border {
+      position: relative;
+      border: 2px solid rgba(212,168,67,0.4);
+      border-radius: 0;
+      padding: 60px !important;
+    }
+
+    .ornate-border::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 1px solid rgba(212,168,67,0.25);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Corner decorations */
+    .ornate-border .corner-tl,
+    .ornate-border .corner-tr,
+    .ornate-border .corner-bl,
+    .ornate-border .corner-br {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-color: var(--ft-gold);
+      z-index: 2;
+    }
+
+    .ornate-border .corner-tl {
+      top: -2px;
+      left: -2px;
+      border-top: 3px solid var(--ft-gold);
+      border-left: 3px solid var(--ft-gold);
+    }
+
+    .ornate-border .corner-tr {
+      top: -2px;
+      right: -2px;
+      border-top: 3px solid var(--ft-gold);
+      border-right: 3px solid var(--ft-gold);
+    }
+
+    .ornate-border .corner-bl {
+      bottom: -2px;
+      left: -2px;
+      border-bottom: 3px solid var(--ft-gold);
+      border-left: 3px solid var(--ft-gold);
+    }
+
+    .ornate-border .corner-br {
+      bottom: -2px;
+      right: -2px;
+      border-bottom: 3px solid var(--ft-gold);
+      border-right: 3px solid var(--ft-gold);
+    }
+
+    /* --- Paragraphs --- */
+    .reveal p {
+      line-height: 1.6;
+      margin: var(--r-block-margin) 0;
+    }
+
+    /* --- Lists --- */
+    .reveal ol, .reveal dl, .reveal ul {
+      display: block;
+      text-align: left;
+      margin: 0 0 0 1.2em;
+    }
+
+    .reveal li {
+      margin-bottom: 0.5em;
+      line-height: 1.5;
+    }
+
+    .reveal ul ul, .reveal ul ol,
+    .reveal ol ol, .reveal ol ul {
+      margin-left: 1.2em;
+      margin-top: 0.3em;
+    }
+
+    .reveal li > ul,
+    .reveal li > ol {
+      font-size: 0.92em;
+      color: rgba(232,213,183,0.7);
+    }
+
+    /* --- Blockquote --- */
+    .reveal blockquote {
+      width: 90%;
+      margin: var(--r-block-margin) 0;
+      padding: 0.8em 1.4em;
+      border-left: 4px solid var(--ft-gold);
+      background: rgba(212,168,67,0.08);
+      box-shadow: none;
+      font-style: italic;
+      color: var(--ft-sand);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* --- Strong text --- */
+    .reveal strong, .reveal b {
+      font-weight: 700;
+      color: var(--ft-gold);
+    }
+
+    /* --- Progress bar --- */
+    .reveal .progress {
+      background: rgba(212,168,67,0.15);
+      color: var(--ft-gold);
+      height: 4px;
+    }
+
+    .reveal .controls {
+      color: var(--ft-gold);
+    }
+
+    .reveal .slide-number {
+      font-family: var(--r-main-font);
+      font-size: 14px;
+      color: rgba(212,168,67,0.5);
+      background: transparent;
+    }
+
+    .reveal .small { font-size: 0.6em; color: rgba(232,213,183,0.6); }
+
+    /* --- Two-column flex helper --- */
+    .reveal .columns {
+      display: flex;
+      gap: 2em;
+      align-items: flex-start;
+    }
+    .reveal .columns > * { flex: 1; }
+
+    /* --- Tribe cards --- */
+    .tribe-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 20px;
+      margin: 5px 0;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .tribe-card:hover {
+      transform: translateX(4px);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .tribe-card .tribe-icon {
+      font-size: 1.8em;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .tribe-card .tribe-info h3 {
+      margin: 0 0 2px 0;
+      padding: 0;
+      border: none;
+      font-size: 0.95em;
+      font-family: 'Cinzel Decorative', serif;
+    }
+
+    .tribe-card .tribe-info p {
+      margin: 0;
+      font-size: 0.85em;
+      opacity: 0.8;
+    }
+
+    .tribe-viziers { border-color: #FFD700; }
+    .tribe-viziers h3 { color: #FFD700; }
+    .tribe-assassins { border-color: #DC3545; }
+    .tribe-assassins h3 { color: #DC3545; }
+    .tribe-builders { border-color: #4A9BD9; }
+    .tribe-builders h3 { color: #4A9BD9; }
+    .tribe-merchants { border-color: #28A745; }
+    .tribe-merchants h3 { color: #28A745; }
+    .tribe-elders { border-color: #F0F0F0; }
+    .tribe-elders h3 { color: #F0F0F0; }
+
+    /* --- Victory path cards --- */
+    .victory-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .victory-card {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(212,168,67,0.2);
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+
+    .victory-card:hover {
+      border-color: var(--ft-gold);
+    }
+
+    .victory-card .v-icon {
+      font-size: 1.3em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .victory-card .v-title {
+      font-family: 'Cinzel Decorative', serif;
+      color: var(--ft-gold);
+      font-size: 0.85em;
+      font-weight: 700;
+    }
+
+    .victory-card .v-desc {
+      font-size: 0.75em;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    .victory-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* --- Stat badge --- */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0;
+    }
+
+    .stat-badge {
+      text-align: center;
+      padding: 16px;
+      background: rgba(212,168,67,0.06);
+      border: 1px solid rgba(212,168,67,0.15);
+      border-radius: 8px;
+    }
+
+    .stat-badge .stat-number {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.6em;
+      color: var(--ft-gold);
+      display: block;
+    }
+
+    .stat-badge .stat-label {
+      font-size: 0.75em;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* --- Feature list --- */
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0 8px 32px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .feature-list li::before {
+      content: '\25C6';
+      position: absolute;
+      left: 0;
+      color: var(--ft-gold);
+      font-size: 0.8em;
+    }
+
+    /* --- Background image overlay --- */
+    .bg-overlay {
+      background: linear-gradient(135deg, rgba(26,14,46,0.92), rgba(45,27,78,0.88)) !important;
+    }
+
+    /* --- Decorative divider --- */
+    .divider {
+      text-align: center;
+      margin: 16px 0;
+      color: var(--ft-gold);
+      font-size: 1.2em;
+      opacity: 0.5;
+      letter-spacing: 8px;
+    }
+
+    /* --- Image styling --- */
+    .reveal img {
+      margin: var(--r-block-margin) 0;
+      border-radius: 8px;
+      border: 1px solid rgba(212,168,67,0.2);
+    }
+
+    .reveal .slide-bg-img {
+      border: none;
+      border-radius: 0;
+    }
+
+    /* --- Quote highlight --- */
+    .highlight-quote {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1em;
+      color: var(--ft-gold);
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid rgba(212,168,67,0.3);
+      border-bottom: 1px solid rgba(212,168,67,0.3);
+      margin: 20px 0;
+      animation: subtleGlow 4s ease-in-out infinite;
+    }
+
+    /* --- Audience card --- */
+    .audience-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .audience-card {
+      padding: 16px 18px;
+      border-radius: 8px;
+      background: rgba(27,138,138,0.08);
+      border: 1px solid rgba(27,138,138,0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .audience-card .a-icon {
+      font-size: 1.5em;
+    }
+
+    .audience-card .a-text {
+      font-size: 0.85em;
+    }
+
+    /* --- CTA button style --- */
+    .cta-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--ft-gold), #b8922e);
+      color: var(--ft-deep-bg) !important;
+      text-decoration: none !important;
+      font-family: 'Cinzel Decorative', serif;
+      font-weight: 700;
+      font-size: 0.85em;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(212,168,67,0.4);
+    }
+
+    /* --- Print --- */
+    @media print {
+      .backgrounds { background-color: var(--r-background-color); }
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ============================================= -->
+      <!-- SLIDE 1: TITLE -->
+      <!-- ============================================= -->
+      <section class="title-slide ornate-border"
+               data-background-image="https://images.unsplash.com/photo-1549944850-84e00be4203b?w=1920&q=80"
+               data-background-opacity="0.15">
+        <div class="corner-tl"></div>
+        <div class="corner-tr"></div>
+        <div class="corner-bl"></div>
+        <div class="corner-br"></div>
+        <div class="divider" style="margin-bottom: 24px;">&#10040; &#10040; &#10040;</div>
+        <h1>Five Tribes</h1>
+        <p style="font-family: 'Cinzel Decorative', serif; font-size: 0.9em; color: var(--ft-gold); margin-top: -8px;">The Djinns of Naqala</p>
+        <div class="divider" style="margin: 16px 0;">&#9830; &#9830; &#9830;</div>
+        <p style="font-size: 1.1em;">Your Next Favorite Board Game</p>
+        <p class="small" style="margin-top: 24px;">A Days of Wonder Masterpiece by Bruno Cathala</p>
+        <aside class="notes">Welcome everyone! Today I'm going to pitch you what I think is one of the most brilliantly designed board games ever made. By the end of this, you'll be itching to play.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 2: THE SETTING -->
+      <!-- ============================================= -->
+      <section data-background-image="https://images.unsplash.com/photo-1547235001-d703406d3f17?w=1920&q=80"
+               data-background-opacity="0.18"
+               data-background-color="#1a0e2e">
+        <h2>Welcome to the Sultanate of Naqala</h2>
+        <div class="columns">
+          <div>
+            <p style="font-size: 1.05em;">The old Sultan is dead. The throne sits empty.</p>
+            <p>In this fabled land of <strong>Arabian fantasy</strong>, you'll navigate a world of:</p>
+            <ul>
+              <li class="fragment">Ancient <strong>villages</strong> and bustling <strong>markets</strong></li>
+              <li class="fragment">Sacred <strong>oases</strong> and mysterious <strong>holy places</strong></li>
+              <li class="fragment">Five powerful <strong>tribes</strong> awaiting your command</li>
+              <li class="fragment">Legendary <strong>Djinns</strong> with supernatural powers</li>
+            </ul>
+            <p class="fragment" style="margin-top: 16px;"><strong>Your goal:</strong> Maneuver the tribes, summon Djinns, and claim the Sultanate as your own.</p>
+          </div>
+          <div style="text-align: center; display: flex; align-items: center; justify-content: center;">
+            <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80"
+                 alt="Arabian palace architecture"
+                 style="max-height: 380px; border: 2px solid rgba(212,168,67,0.3);">
+          </div>
+        </div>
+        <aside class="notes">Set the scene with the Arabian fantasy theme. The game immediately draws you in with its beautiful world-building. Naqala feels like a place from One Thousand and One Nights.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 3: AT A GLANCE -->
+      <!-- ============================================= -->
+      <section data-background-color="#0f0720">
+        <h2>At a Glance</h2>
+        <div class="stat-grid" style="margin-bottom: 20px;">
+          <div class="stat-badge fragment">
+            <span class="stat-number">2&ndash;4</span>
+            <span class="stat-label">Players</span>
+          </div>
+          <div class="stat-badge fragment">
+            <span class="stat-number">40&ndash;80</span>
+            <span class="stat-label">Minutes</span>
+          </div>
+          <div class="stat-badge fragment">
+            <span class="stat-number">7.77</span>
+            <span class="stat-label">BGG Rating / 10</span>
+          </div>
+        </div>
+        <ul style="list-style: none; margin: 0; padding: 0; font-size: 0.95em;">
+          <li class="fragment" style="padding: 6px 0;">&#9733; <strong>Designer:</strong> Bruno Cathala &nbsp;|&nbsp; <strong>Publisher:</strong> Days of Wonder</li>
+          <li class="fragment" style="padding: 6px 0;">&#9733; <strong>44,000+ ratings</strong> on BoardGameGeek</li>
+          <li class="fragment" style="padding: 6px 0;">&#9733; Ranked <strong>#94 Overall</strong> &nbsp;|&nbsp; <strong>#84 Strategy</strong></li>
+          <li class="fragment" style="padding: 6px 0;">&#127942; <strong>2014 Game of the Year</strong> &mdash; Board Game Quest Awards</li>
+          <li class="fragment" style="padding: 6px 0;">&#127942; <strong>2014 Golden Geek</strong> Best Strategy Board Game</li>
+        </ul>
+        <aside class="notes">These numbers speak for themselves. A 7.77 on BGG is exceptional - that puts it in the top tier of all board games ever made. It's won multiple prestigious awards.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 4: THE MANCALA TWIST -->
+      <!-- ============================================= -->
+      <section data-background-color="#1a0e2e">
+        <h2>The Mancala Twist</h2>
+        <div class="columns">
+          <div>
+            <p style="font-family: 'Cinzel Decorative', serif; color: var(--ft-terracotta); font-size: 0.9em; margin: 0 0 8px 0;">Not Your Typical Worker Placement</p>
+            <ul style="font-size: 0.9em;">
+              <li class="fragment">Meeples <strong>start on the board</strong> &mdash; you <em>move</em> them, not place them</li>
+              <li class="fragment"><strong>Pick up all meeples</strong> from a tile</li>
+              <li class="fragment"><strong>Drop one-by-one</strong> along a path (Mancala-style)</li>
+              <li class="fragment">Last meeple must <strong>match a color</strong> already on the destination</li>
+              <li class="fragment">Collect matches &mdash; <strong>activate their tribe power!</strong></li>
+            </ul>
+          </div>
+          <div style="text-align: center; padding-top: 8px;">
+            <img src="https://images.unsplash.com/photo-1611891487122-207579d67d98?w=600&q=80"
+                 alt="Colorful game pieces"
+                 style="max-height: 220px; border: 2px solid rgba(212,168,67,0.3);">
+            <p style="font-size: 0.65em; opacity: 0.6; margin-top: 2px;">Pick up. Drop. Strategize. Conquer.</p>
+          </div>
+        </div>
+        <div class="fragment highlight-quote" style="font-size: 0.75em; margin-top: 8px; padding: 12px;">
+          Every single turn transforms the entire board. No two games ever play the same.
+        </div>
+        <aside class="notes">This is the hook. Explain Mancala briefly if needed. The key insight is that unlike most worker placement games, the workers are already there. You're redistributing them. This creates an ever-changing puzzle.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 5: THE FIVE TRIBES -->
+      <!-- ============================================= -->
+      <section data-background-color="#1a0e2e">
+        <h2>The Five Tribes</h2>
+        <p style="font-size: 0.9em; margin-bottom: 12px;">Each tribe grants a unique power when collected:</p>
+
+        <div class="tribe-card tribe-viziers fragment">
+          <div class="tribe-icon">&#128313;</div>
+          <div class="tribe-info">
+            <h3>Viziers (Yellow)</h3>
+            <p>Political influence &mdash; keep them for powerful end-game majority scoring</p>
+          </div>
+        </div>
+
+        <div class="tribe-card tribe-assassins fragment">
+          <div class="tribe-icon">&#128308;</div>
+          <div class="tribe-info">
+            <h3>Assassins (Red)</h3>
+            <p>Eliminate rival meeples and claim territory for yourself</p>
+          </div>
+        </div>
+
+        <div class="tribe-card tribe-builders fragment">
+          <div class="tribe-icon">&#128309;</div>
+          <div class="tribe-info">
+            <h3>Builders (Blue)</h3>
+            <p>Generate gold coins based on valuable surrounding tiles</p>
+          </div>
+        </div>
+
+        <div class="tribe-card tribe-merchants fragment">
+          <div class="tribe-icon">&#128994;</div>
+          <div class="tribe-info">
+            <h3>Merchants (Green)</h3>
+            <p>Collect valuable resource cards &mdash; sets are worth big points</p>
+          </div>
+        </div>
+
+        <div class="tribe-card tribe-elders fragment">
+          <div class="tribe-icon">&#9898;</div>
+          <div class="tribe-info">
+            <h3>Elders (White)</h3>
+            <p>Worth victory points &amp; spent to summon the powerful Djinns</p>
+          </div>
+        </div>
+
+        <aside class="notes">Walk through each tribe. The beauty is that every tribe is useful and you need to balance when to use each one. Viziers are long-term, Assassins are tactical, Builders make money, Merchants collect sets, and Elders summon Djinns.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 6: SUMMON THE DJINNS -->
+      <!-- ============================================= -->
+      <section data-background-image="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1920&q=80"
+               data-background-opacity="0.12"
+               data-background-color="#2D1B4E">
+        <h2>Summon the Djinns</h2>
+        <p style="font-family: 'Cinzel Decorative', serif; color: var(--ft-teal); font-size: 1.0em;">Invoke Ancient Powers</p>
+        <div class="columns" style="margin-top: 16px;">
+          <div>
+            <ul>
+              <li class="fragment"><strong>22 unique Djinn cards</strong> with game-changing abilities</li>
+              <li class="fragment">Spend <strong>Elder meeples</strong> (white) to summon them</li>
+              <li class="fragment">Each Djinn grants <strong>special powers</strong> that bend the rules</li>
+              <li class="fragment">They also award <strong>victory points</strong> at game end</li>
+              <li class="fragment">Choosing which Djinn to pursue can <strong>define your entire strategy</strong></li>
+            </ul>
+            <blockquote class="fragment" style="margin-top: 20px;">
+              "The Djinns are the spice that makes every game feel completely different."
+            </blockquote>
+          </div>
+          <div style="text-align: center; display: flex; align-items: center; justify-content: center;">
+            <img src="https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=600&q=80"
+                 alt="Mystical mosque at twilight"
+                 style="max-height: 350px; border: 2px solid rgba(27,138,138,0.4);">
+          </div>
+        </div>
+        <aside class="notes">The Djinns are what elevate this game. Some let you score extra for palm trees, some give you extra actions, some protect your meeples. They create asymmetric play and exciting combos.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 7: MULTIPLE PATHS TO VICTORY -->
+      <!-- ============================================= -->
+      <section data-background-color="#0f0720">
+        <h2>Multiple Paths to Victory</h2>
+        <p style="font-family: 'Cinzel Decorative', serif; color: var(--ft-terracotta); font-size: 0.95em; margin-bottom: 12px;">There's No Single Way to Win</p>
+        <div class="victory-grid">
+          <div class="victory-card fragment">
+            <span class="v-icon">&#127968;</span>
+            <div class="v-title">Territory Control</div>
+            <div class="v-desc">Place Palaces &amp; Palm Trees to claim tiles</div>
+          </div>
+          <div class="victory-card fragment">
+            <span class="v-icon">&#128176;</span>
+            <div class="v-title">Gold Coins</div>
+            <div class="v-desc">Builders generate gold from surroundings</div>
+          </div>
+          <div class="victory-card fragment">
+            <span class="v-icon">&#127183;</span>
+            <div class="v-title">Resource Sets</div>
+            <div class="v-desc">Collect Ivory, Jewels, Silk, Spice &amp; more</div>
+          </div>
+          <div class="victory-card fragment">
+            <span class="v-icon">&#128081;</span>
+            <div class="v-title">Vizier Majority</div>
+            <div class="v-desc">Most Viziers earns a massive bonus</div>
+          </div>
+          <div class="victory-card full-width fragment">
+            <span class="v-icon">&#10024;</span>
+            <div class="v-title">Djinn Powers</div>
+            <div class="v-desc">Summon ancient Djinns for points &amp; game-bending abilities</div>
+          </div>
+        </div>
+        <div class="fragment highlight-quote" style="font-size: 0.8em; margin-top: 16px;">
+          The board is randomly set up each game &mdash; infinite replayability!
+        </div>
+        <aside class="notes">This is the key selling point for strategy gamers. There's no dominant strategy. You have to read the board state and adapt. One game you might go heavy on Viziers, the next you might focus on Djinns and territory.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 8: WHAT MAKES IT SPECIAL -->
+      <!-- ============================================= -->
+      <section data-background-color="#1a0e2e">
+        <h2>Easy to Learn, Impossible to Master</h2>
+        <div class="columns">
+          <div>
+            <ul class="feature-list">
+              <li class="fragment"><strong>Simple rules</strong> that anyone can grasp in 10 minutes</li>
+              <li class="fragment"><strong>Incredible depth</strong> that reveals itself over many plays</li>
+              <li class="fragment"><strong>Turn order bidding</strong> adds delicious tension &mdash; how much is going first worth?</li>
+              <li class="fragment">Every turn presents <strong>meaningful, crunchy decisions</strong></li>
+              <li class="fragment"><strong>Minimal luck</strong> &mdash; your brain is your best weapon</li>
+              <li class="fragment">Gets <strong>better with every play</strong> as you discover new strategies</li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
+            <div class="stat-badge fragment" style="width: 180px;">
+              <span class="stat-number">2.84</span>
+              <span class="stat-label">Complexity / 5</span>
+            </div>
+            <p class="fragment" style="text-align: center; font-size: 0.85em; color: var(--ft-teal);">
+              The sweet spot &mdash;<br>not too light, not too heavy.<br><strong>Just right.</strong>
+            </p>
+            <img src="https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=400&q=80"
+                 alt="Strategy game pieces"
+                 class="fragment"
+                 style="max-height: 180px; border: 2px solid rgba(212,168,67,0.3);">
+          </div>
+        </div>
+        <aside class="notes">The complexity rating of 2.84/5 is the Goldilocks zone. Compare to chess which would be around 4+. This is approachable but endlessly deep. The turn order auction is genius - do you pay a lot to go first or save your coins?</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 9: COMPONENTS -->
+      <!-- ============================================= -->
+      <section data-background-color="#2D1B4E">
+        <h2>Beautifully Crafted</h2>
+        <p style="font-family: 'Cinzel Decorative', serif; color: var(--ft-sand); font-size: 0.9em; margin-bottom: 12px;">A Days of Wonder Production</p>
+        <div class="columns">
+          <div>
+            <ul>
+              <li class="fragment"><strong>30 modular board tiles</strong> &mdash; beautifully illustrated, different every game</li>
+              <li class="fragment"><strong>90 colorful wooden meeples</strong> across five vibrant colors</li>
+              <li class="fragment"><strong>22 Djinn cards</strong> with stunning original artwork</li>
+              <li class="fragment"><strong>54 resource cards</strong> &mdash; Ivory, Jewels, Gold, Papyrus, Silk, Spice and more</li>
+              <li class="fragment">Palm trees, palaces, camels, and <strong>gold coins</strong></li>
+            </ul>
+            <p class="fragment" style="font-size: 0.85em; margin-top: 16px; color: rgba(232,213,183,0.7);">Days of Wonder is legendary for component quality. Everything in this box feels premium.</p>
+          </div>
+          <div style="text-align: center; display: flex; align-items: center; justify-content: center;">
+            <img src="https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=600&q=80"
+                 alt="Colorful board game components"
+                 style="max-height: 380px; border: 2px solid rgba(212,168,67,0.3);">
+          </div>
+        </div>
+        <aside class="notes">Days of Wonder never disappoints on production quality. The meeples feel great, the tiles are thick and beautiful, and the art throughout is fantastic. Opening this box feels like unwrapping a treasure.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 10: WHO WILL LOVE THIS? -->
+      <!-- ============================================= -->
+      <section data-background-color="#1a0e2e">
+        <h2>Who Will Love This?</h2>
+        <p style="font-size: 0.9em; margin-bottom: 12px;">Five Tribes is perfect for you if you enjoy:</p>
+        <div class="audience-grid">
+          <div class="audience-card fragment">
+            <div class="a-icon">&#129504;</div>
+            <div class="a-text"><strong>Puzzle-like</strong> strategic thinking</div>
+          </div>
+          <div class="audience-card fragment">
+            <div class="a-icon">&#9878;</div>
+            <div class="a-text">Games where <strong>every decision matters</strong></div>
+          </div>
+          <div class="audience-card fragment">
+            <div class="a-icon">&#127912;</div>
+            <div class="a-text"><strong>Beautiful components</strong> &amp; immersive themes</div>
+          </div>
+          <div class="audience-card fragment">
+            <div class="a-icon">&#9878;</div>
+            <div class="a-text"><strong>Medium weight</strong> &mdash; not too light, not too heavy</div>
+          </div>
+          <div class="audience-card fragment">
+            <div class="a-icon">&#128257;</div>
+            <div class="a-text">Games that get <strong>better every time you play</strong></div>
+          </div>
+          <div class="audience-card fragment">
+            <div class="a-icon">&#128101;</div>
+            <div class="a-text">Plays great at <strong>2, 3, or 4 players</strong></div>
+          </div>
+        </div>
+        <div class="fragment highlight-quote" style="font-size: 0.8em; margin-top: 20px;">
+          Whether you're a seasoned gamer or just getting into the hobby,<br>Five Tribes has something for everyone.
+        </div>
+        <aside class="notes">This is a great game to recommend because it scales well across player counts and experience levels. Two-player is incredibly tight and strategic. Four-player is chaotic fun. Three is the sweet spot for many.</aside>
+      </section>
+
+      <!-- ============================================= -->
+      <!-- SLIDE 11: CLOSING / CTA -->
+      <!-- ============================================= -->
+      <section class="title-slide ornate-border"
+               data-background-image="https://images.unsplash.com/photo-1549944850-84e00be4203b?w=1920&q=80"
+               data-background-opacity="0.12">
+        <div class="corner-tl"></div>
+        <div class="corner-tr"></div>
+        <div class="corner-bl"></div>
+        <div class="corner-br"></div>
+        <div class="divider" style="margin-bottom: 16px;">&#10040; &#10040; &#10040;</div>
+        <h1 style="font-size: 1.6em;">Claim Your Place in the Sultanate</h1>
+        <p style="font-family: 'Cinzel Decorative', serif; font-size: 0.85em; color: var(--ft-teal); margin: 8px 0;">The tribes await your command...</p>
+        <div class="divider">&#9830; &#9830; &#9830;</div>
+        <p style="font-size: 0.95em; margin-top: 12px;">Ready to play? Let's set up a game night.</p>
+        <a href="https://boardgamegeek.com/boardgame/157354/five-tribes-the-djinns-of-naqala"
+           target="_blank"
+           class="cta-link">
+          Explore on BoardGameGeek
+        </a>
+        <p class="small" style="margin-top: 24px;">Designed by Bruno Cathala &nbsp;&#9830;&nbsp; Published by Days of Wonder &nbsp;&#9830;&nbsp; 2&ndash;4 Players</p>
+        <aside class="notes">Close strong! Offer to organize a game night. The best way to sell this game is to play it. One round and they'll be hooked.</aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      slideNumber: true,
+      transition: 'fade',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      pdfSeparateFragments: false,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealMermaid]
+    });
+  </script>
+</body>
+</html>
