@@ -4,8 +4,12 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    background: #06080d;
+    background: #06080d !important;
+    color: #e2e8f0 !important;
   }
+
+  /* Override pandoc default link colors (dark text on dark bg) */
+  a, a:visited { color: #e2e8f0 !important; }
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -16,8 +20,8 @@
       radial-gradient(ellipse 60% 50% at 80% 80%, rgba(136, 84, 208, 0.10), transparent);
     color: #e2e8f0;
     line-height: 1.7;
-    padding: 0;
-    max-width: 100%;
+    padding: 0 !important;
+    max-width: 100% !important;
   }
 
   /* Hide the pandoc-generated title header (we use the # Slides from markdown) */
@@ -27,7 +31,8 @@
   body > main, body > :not(header):not(footer) {
     max-width: 640px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 
   /* ── Title (# Slides) ── */
@@ -40,7 +45,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-align: center;
-    padding-top: 5rem;
+    padding-top: 8rem;
     margin-bottom: 0.5rem;
     line-height: 1.2;
   }
