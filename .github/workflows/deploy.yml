@@ -37,7 +37,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y pandoc
 
       - name: Build index.html from README
-        run: pandoc README.md --standalone --metadata title="Slides" --include-in-header=scripts/index-style.html -o index.html
+        run: |
+          sed '/^---$/,$d' README.md > _index.md
+          pandoc _index.md --standalone --metadata title="Slides" --include-in-header=scripts/index-style.html -o index.html
+          rm _index.md
 
       - name: Assemble site
         run: |
