@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playwright CLI — Token-Efficient Browser Automation for AI Coding Agents</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --r-background-color: #0d1117;
+      --r-main-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-main-font-size: 26px;
+      --r-main-color: #c9d1d9;
+      --r-heading-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-heading-color: #58a6ff;
+      --r-heading-font-weight: 700;
+      --r-heading-line-height: 1.2;
+      --r-heading-letter-spacing: -0.02em;
+      --r-heading-text-transform: none;
+      --r-heading-text-shadow: none;
+      --r-heading1-text-shadow: none;
+      --r-heading1-size: 2.0em;
+      --r-heading2-size: 1.4em;
+      --r-heading3-size: 1.1em;
+      --r-heading4-size: 0.95em;
+      --r-block-margin: 14px;
+      --r-heading-margin: 0 0 20px 0;
+      --r-code-font: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+      --r-link-color: #58a6ff;
+      --r-link-color-dark: #388bfd;
+      --r-link-color-hover: #79c0ff;
+      --r-selection-background-color: rgba(88, 166, 255, 0.25);
+      --r-selection-color: #fff;
+      --accent-green: #3fb950;
+      --accent-orange: #d29922;
+      --accent-red: #f85149;
+      --accent-purple: #bc8cff;
+      --surface-color: #161b22;
+      --border-color: #30363d;
+    }
+
+    .reveal .slides { text-align: left; }
+
+    .reveal .slides section,
+    .reveal .slides section > section {
+      box-sizing: border-box;
+      padding: 48px 56px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .reveal h1, .reveal h2, .reveal h3,
+    .reveal h4, .reveal h5, .reveal h6 {
+      text-align: left;
+      text-transform: none;
+    }
+
+    .reveal h2 {
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    /* Title slide */
+    .reveal .slides section.title-slide {
+      text-align: center;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .reveal .title-slide h1 {
+      text-align: center;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 16px;
+      font-size: 2.4em;
+    }
+
+    .reveal .title-slide p {
+      text-align: center;
+      color: #8b949e;
+    }
+
+    .reveal .title-slide .subtitle {
+      font-size: 1.2em;
+      color: var(--accent-green);
+      margin-bottom: 8px;
+    }
+
+    .reveal p { line-height: 1.6; margin: var(--r-block-margin) 0; }
+
+    .reveal ol, .reveal dl, .reveal ul {
+      display: block;
+      text-align: left;
+      margin: 0 0 0 1.2em;
+    }
+
+    .reveal li { margin-bottom: 0.5em; line-height: 1.5; }
+
+    .reveal ul ul, .reveal ul ol,
+    .reveal ol ol, .reveal ol ul {
+      margin-left: 1.2em;
+      margin-top: 0.3em;
+    }
+
+    .reveal li > ul, .reveal li > ol {
+      font-size: 0.92em;
+      color: #8b949e;
+    }
+
+    /* Tables */
+    .reveal table:not(pre table) {
+      width: 100%;
+      margin: var(--r-block-margin) 0;
+      font-size: 0.78em;
+    }
+
+    .reveal table:not(pre table) th {
+      background-color: #1f6feb;
+      color: #ffffff;
+      padding: 0.5em 0.8em;
+      font-weight: 600;
+      border-bottom: 2px solid #1f6feb;
+    }
+
+    .reveal table:not(pre table) td {
+      padding: 0.5em 0.8em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .reveal table:not(pre table) tbody tr:nth-child(even) {
+      background-color: var(--surface-color);
+    }
+
+    /* Blockquote */
+    .reveal blockquote {
+      width: 90%;
+      margin: var(--r-block-margin) 0;
+      padding: 0.6em 1.2em;
+      border-left: 4px solid var(--accent-green);
+      background: var(--surface-color);
+      box-shadow: none;
+      font-style: italic;
+      color: #8b949e;
+    }
+
+    /* Code blocks */
+    .reveal pre {
+      width: 100%;
+      margin: var(--r-block-margin) 0;
+      box-shadow: none;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.52em;
+    }
+
+    .reveal pre code { padding: 16px; }
+    .reveal code { font-size: 0.9em; }
+
+    .reveal img {
+      margin: var(--r-block-margin) 0;
+      border-radius: 6px;
+    }
+
+    .reveal strong, .reveal b {
+      font-weight: 700;
+      color: #58a6ff;
+    }
+
+    .reveal .progress {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-green);
+      height: 4px;
+    }
+
+    .reveal .controls { color: var(--r-link-color); }
+
+    .reveal .slide-number {
+      font-family: var(--r-main-font);
+      font-size: 14px;
+      color: #484f58;
+      background: transparent;
+    }
+
+    .reveal .small { font-size: 0.6em; color: #484f58; }
+    .reveal .text-left { text-align: left; }
+    .reveal .mermaid { margin: 0.5em 0; }
+    .reveal .mermaid svg { max-height: 460px; }
+
+    .reveal .columns {
+      display: flex;
+      gap: 2em;
+      align-items: flex-start;
+    }
+    .reveal .columns > * { flex: 1; }
+
+    /* Custom: highlight box */
+    .highlight-box {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 12px 0;
+    }
+
+    .highlight-box.green { border-left: 4px solid var(--accent-green); }
+    .highlight-box.red { border-left: 4px solid var(--accent-red); }
+    .highlight-box.orange { border-left: 4px solid var(--accent-orange); }
+    .highlight-box.blue { border-left: 4px solid var(--r-link-color); }
+
+    /* Stat display */
+    .stat-row {
+      display: flex;
+      gap: 1.5em;
+      margin: 16px 0;
+    }
+    .stat-card {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px 24px;
+      text-align: center;
+      flex: 1;
+    }
+    .stat-card .number {
+      font-size: 2em;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .stat-card .label {
+      font-size: 0.7em;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+    .stat-card.green .number { color: var(--accent-green); }
+    .stat-card.red .number { color: var(--accent-red); }
+    .stat-card.blue .number { color: var(--r-link-color); }
+    .stat-card.orange .number { color: var(--accent-orange); }
+
+    /* Inline code */
+    .reveal :not(pre) > code {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.85em;
+      color: var(--accent-orange);
+    }
+
+    /* Flow arrow */
+    .flow-arrow {
+      text-align: center;
+      font-size: 1.5em;
+      color: #484f58;
+      margin: 8px 0;
+    }
+
+    @media print {
+      .backgrounds { background-color: var(--r-background-color); }
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- SLIDE 1: TITLE -->
+      <section class="title-slide">
+        <h1>Playwright CLI</h1>
+        <p class="subtitle">Token-Efficient Browser Automation for AI Coding Agents</p>
+        <p style="color: #8b949e; font-size: 0.8em; margin-top: 24px;">From Context Bloat to Lean Automation</p>
+        <p class="small" style="margin-top: 32px;">github.com/microsoft/playwright-cli</p>
+      </section>
+
+      <!-- SLIDE 2: THE PROBLEM -->
+      <section>
+        <h2>AI Agents Need a Browser</h2>
+        <p style="font-size: 1.05em;">AI coding agents like <strong>Claude Code</strong>, <strong>GitHub Copilot</strong>, and <strong>Cursor</strong> are transforming how we build software. But there's a gap&hellip;</p>
+        <div class="columns" style="margin-top: 20px;">
+          <div>
+            <h3 style="color: var(--accent-green);">What agents can do</h3>
+            <ul>
+              <li>Read & write code</li>
+              <li>Run terminal commands</li>
+              <li>Reason about architecture</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--accent-red);">What they struggle with</h3>
+            <ul>
+              <li>See what a web page looks like</li>
+              <li>Click buttons, fill forms</li>
+              <li>Verify UI changes visually</li>
+            </ul>
+          </div>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.95em; color: #8b949e;">How do we give an AI agent <strong>"eyes and hands"</strong> in a browser&mdash;without overwhelming it?</p>
+      </section>
+
+      <!-- SLIDE 3: CONTEXT WINDOW CRUNCH -->
+      <section>
+        <h2>The Context Window Crunch</h2>
+        <p style="font-size: 0.9em; color: #8b949e;">Think of the context window as the agent's <strong>working memory</strong>. It's finite.</p>
+        <ul>
+          <li>Browser automation generates <strong>massive data</strong> per interaction</li>
+          <li>A single page navigation can return <strong>thousands of tokens</strong> of accessibility tree data</li>
+          <li>Tool schemas, DOM snapshots, console logs&mdash;all consuming precious context</li>
+          <li>Over long sessions, context fills up &rarr; <strong>reasoning degrades</strong></li>
+          <li style="color: var(--accent-orange);">"LLMs start to struggle at ~30 tools for large models, ~19 for smaller ones"</li>
+        </ul>
+        <aside class="notes">Research from Speakeasy blog on tool proliferation shows that most agents only use 8 of the 26 available MCP tools. The 80/20 rule applies strongly here.</aside>
+      </section>
+
+      <!-- SLIDE 4: AGENT SKILLS INTRO -->
+      <section>
+        <h2>First, Let's Understand: Agent Skills</h2>
+        <p style="font-size: 0.95em;">Before we solve the browser problem, meet the platform that makes solutions composable.</p>
+        <ul>
+          <li><strong>Skills</strong> = folders with a <code>SKILL.md</code> file containing instructions</li>
+          <li>Think of them as <strong>"expertise packages"</strong> an agent can load on demand</li>
+          <li><strong>Progressive Disclosure</strong>: metadata &rarr; core instructions &rarr; supporting files</li>
+          <li>Only loads what's needed, when it's needed&mdash;<strong>no context waste</strong></li>
+          <li>Open standard (<strong>agentskills.io</strong>)&mdash;works across Claude Code, Copilot, and more</li>
+        </ul>
+        <aside class="notes">Agent Skills were introduced by Anthropic as an open standard. They use a three-level progressive disclosure system: metadata (~100 words always in context), SKILL.md body (loaded when triggered), and supporting files (loaded on demand).</aside>
+      </section>
+
+      <!-- SLIDE 5: HOW SKILLS WORK -->
+      <section>
+        <h2>How Skills Work</h2>
+        <div class="columns">
+          <div>
+            <h3 style="color: var(--accent-purple);">Skill Structure</h3>
+            <pre><code class="language-text" data-trim>
+my-skill/
+├── SKILL.md          # Instructions (required)
+├── references/       # Loaded as needed
+├── scripts/          # Executable helpers
+└── assets/           # Templates, etc.
+            </code></pre>
+            <h3 style="color: var(--accent-purple); margin-top: 16px;">Frontmatter</h3>
+            <pre><code class="language-yaml" data-trim>
+---
+name: playwright-cli
+description: Browser automation via
+  CLI commands. Use when testing or
+  interacting with web pages.
+---
+            </code></pre>
+          </div>
+          <div>
+            <h3 style="color: var(--accent-green);">3 Layers of Loading</h3>
+            <div class="highlight-box green" style="margin-bottom: 10px;">
+              <strong>1. Metadata</strong> <span style="color: #8b949e;">~100 words</span><br>
+              <span style="font-size: 0.85em; color: #8b949e;">Always in context. Name + description.</span>
+            </div>
+            <div class="highlight-box blue" style="margin-bottom: 10px;">
+              <strong>2. SKILL.md Body</strong> <span style="color: #8b949e;">&lt;5K words</span><br>
+              <span style="font-size: 0.85em; color: #8b949e;">Loads when skill is triggered.</span>
+            </div>
+            <div class="highlight-box orange">
+              <strong>3. References & Scripts</strong> <span style="color: #8b949e;">Unlimited</span><br>
+              <span style="font-size: 0.85em; color: #8b949e;">Loaded on demand by the agent.</span>
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Skills use progressive disclosure. Metadata is always in context (~100 words), SKILL.md body loads on trigger, references load on demand. This keeps the context lean while giving agents access to deep knowledge when needed.</aside>
+      </section>
+
+      <!-- SLIDE 6: ENTER PLAYWRIGHT MCP -->
+      <section>
+        <h2>Enter Playwright MCP</h2>
+        <p>The first mainstream answer: a <strong>Model Context Protocol</strong> server for browser automation.</p>
+        <ul>
+          <li><strong>26 tools</strong>: <code>browser_navigate</code>, <code>browser_click</code>, <code>browser_snapshot</code>, <code>browser_type</code>&hellip;</li>
+          <li>Streams full <strong>accessibility trees</strong> and console output into context</li>
+          <li>Uses <strong>structured snapshots</strong>&mdash;no screenshots needed for interaction</li>
+          <li>Works great for <strong>sandboxed environments</strong> (Claude Desktop, chat interfaces)</li>
+          <li style="color: var(--accent-orange);">But&hellip; there's a catch</li>
+        </ul>
+        <aside class="notes">Playwright MCP is by Microsoft, same team. It's a JSON-RPC protocol server that lets LLMs control browsers. Great for Claude Desktop and chat-based agents that don't have filesystem access.</aside>
+      </section>
+
+      <!-- SLIDE 7: THE MCP TOKEN TAX -->
+      <section>
+        <h2>The MCP Token Tax</h2>
+        <div class="stat-row">
+          <div class="stat-card red">
+            <div class="number">~114K</div>
+            <div class="label">Tokens per task (MCP)</div>
+          </div>
+          <div class="stat-card red">
+            <div class="number">26</div>
+            <div class="label">Tool schemas in context</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="number">1000s</div>
+            <div class="label">Tokens per navigation</div>
+          </div>
+        </div>
+        <ul style="margin-top: 16px;">
+          <li>Every <code>browser_navigate</code> returns the <strong>full accessibility tree</strong></li>
+          <li>All 26 tool schemas loaded at startup&mdash;<strong>always consuming context</strong></li>
+          <li>Long sessions &rarr; context degradation &rarr; confused reasoning</li>
+        </ul>
+        <blockquote style="margin-top: 16px;">
+          "MCP sends the whole library. What if we just sent the page number?"
+        </blockquote>
+      </section>
+
+      <!-- SLIDE 8: THE SOLUTION -->
+      <section>
+        <h2>The Solution: Playwright CLI</h2>
+        <p style="font-size: 1.05em; color: var(--accent-green); margin-bottom: 16px;">A fundamentally different architecture.</p>
+        <div class="columns">
+          <div>
+            <ul>
+              <li><strong>CLI-first</strong>, disk-based architecture</li>
+              <li>Instead of streaming data <em>into</em> the model&mdash;<strong>save it to disk</strong></li>
+              <li>Return only <strong>file paths</strong> and minimal confirmations</li>
+              <li><strong>50+ commands</strong> available without context overhead</li>
+              <li>Installed as a <strong>Skill</strong>&mdash;no schema bloat</li>
+            </ul>
+          </div>
+          <div>
+            <div class="stat-row" style="flex-direction: column; gap: 12px;">
+              <div class="stat-card green">
+                <div class="number">~27K</div>
+                <div class="label">Tokens per task (CLI)</div>
+              </div>
+              <div class="stat-card green">
+                <div class="number">4x</div>
+                <div class="label">Fewer tokens than MCP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top: 12px; color: #8b949e; font-size: 0.9em;">The agent gets a <strong>toolbelt</strong>, not a library.</p>
+      </section>
+
+      <!-- SLIDE 9: HOW IT WORKS -->
+      <section>
+        <h2>How Playwright CLI Works</h2>
+        <pre><code class="language-bash" data-trim>
+# 1. Open a browser
+playwright-cli open https://example.com --headed
+
+# 2. Take a snapshot (saved to disk!)
+playwright-cli snapshot
+# → .playwright-cli/page-2026-02-12.yml
+
+# 3. Interact using compact element references
+playwright-cli fill e8 "Write tests"
+playwright-cli press Enter
+playwright-cli check e21
+
+# 4. Verify with a screenshot
+playwright-cli screenshot
+# → .playwright-cli/screenshot-2026-02-12.png
+        </code></pre>
+        <p style="color: var(--accent-green); font-size: 0.9em;">Element references like <code>e8</code>, <code>e21</code> are compact identifiers&mdash;no verbose CSS selectors needed!</p>
+        <aside class="notes">Each response returns minimal data — file paths and confirmations — keeping the LLM context lean. The agent reads snapshot files from disk only when it needs to understand page structure.</aside>
+      </section>
+
+      <!-- SLIDE 10: SNAPSHOT SYSTEM -->
+      <section>
+        <h2>The Snapshot System</h2>
+        <p style="color: #8b949e; font-size: 0.9em;">The secret sauce behind token efficiency.</p>
+        <div class="columns" style="margin-top: 12px;">
+          <div>
+            <div class="highlight-box green">
+              <strong>How it works</strong>
+              <ol style="font-size: 0.85em; margin-top: 8px;">
+                <li><code>playwright-cli snapshot</code> captures page state</li>
+                <li>Saves a <strong>YAML file</strong> to <code>.playwright-cli/</code></li>
+                <li>Assigns compact refs: <code>e8</code>, <code>e21</code>, <code>e255</code></li>
+                <li>Agent reads the file <strong>only when needed</strong></li>
+              </ol>
+            </div>
+          </div>
+          <div>
+            <div class="highlight-box blue">
+              <strong>Key properties</strong>
+              <ul style="font-size: 0.85em; margin-top: 8px;">
+                <li><strong>Deterministic</strong>&mdash;same page = same refs</li>
+                <li><strong>Compact</strong>&mdash;refs, not full selectors</li>
+                <li><strong>Expiring</strong>&mdash;page changes = new snapshot</li>
+                <li><strong>Disk-based</strong>&mdash;not in context window</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow fragment">&darr;</div>
+        <p style="text-align: center; color: var(--accent-green);">State lives on disk. The context stays clean.</p>
+      </section>
+
+      <!-- SLIDE 11: CLI + SKILLS -->
+      <section>
+        <h2>CLI + Skills = Perfect Match</h2>
+        <pre><code class="language-bash" data-trim>
+# Install skills for your coding agent
+playwright-cli install --skills
+
+# This creates:
+# .claude/skills/playwright-cli/SKILL.md
+        </code></pre>
+        <div class="columns" style="margin-top: 16px;">
+          <div>
+            <h3 style="color: var(--accent-green);">What happens</h3>
+            <ul style="font-size: 0.88em;">
+              <li>Agent reads <code>SKILL.md</code> to learn commands</li>
+              <li>Uses <strong>Bash tool</strong> to execute CLI commands</li>
+              <li>Reads snapshot files from disk as needed</li>
+              <li>No MCP server running, no tool proliferation</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--accent-red);">What doesn't happen</h3>
+            <ul style="font-size: 0.88em;">
+              <li>No 26 tool schemas loaded at startup</li>
+              <li>No accessibility trees in context</li>
+              <li>No context window bloat over time</li>
+              <li>No MCP configuration required</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 12: HEAD TO HEAD -->
+      <section>
+        <h2>Head-to-Head: CLI vs MCP</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Aspect</th>
+              <th style="color: var(--accent-green);">Playwright CLI</th>
+              <th style="color: var(--accent-orange);">Playwright MCP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Token Usage</strong></td>
+              <td>~27K per task</td>
+              <td>~114K per task</td>
+            </tr>
+            <tr>
+              <td><strong>Data Delivery</strong></td>
+              <td>Disk (file paths)</td>
+              <td>Into LLM context</td>
+            </tr>
+            <tr>
+              <td><strong>Commands Available</strong></td>
+              <td>50+</td>
+              <td>26 tools</td>
+            </tr>
+            <tr>
+              <td><strong>Long Sessions</strong></td>
+              <td>Sustainable</td>
+              <td>Context degrades</td>
+            </tr>
+            <tr>
+              <td><strong>Best For</strong></td>
+              <td>Coding agents (shell)</td>
+              <td>Sandboxed envs</td>
+            </tr>
+            <tr>
+              <td><strong>Determinism</strong></td>
+              <td>High</td>
+              <td>Variable</td>
+            </tr>
+            <tr>
+              <td><strong>Setup</strong></td>
+              <td><code>npm install -g</code></td>
+              <td>MCP config in IDE</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- SLIDE 13: USE CASE - E2E TESTING -->
+      <section>
+        <h2>Use Case: Automated E2E Testing</h2>
+        <p style="color: #8b949e; font-size: 0.9em;">An agent explores, tests, and verifies&mdash;all in one session.</p>
+        <pre><code class="language-bash" data-trim>
+playwright-cli open https://demo.playwright.dev/todomvc --headed
+playwright-cli snapshot
+playwright-cli fill e8 "Write tests"
+playwright-cli press Enter
+playwright-cli check e21
+playwright-cli screenshot
+        </code></pre>
+        <div class="highlight-box green fragment" style="margin-top: 12px;">
+          <strong>What the agent can do in one session:</strong>
+          <span style="font-size: 0.88em;">Explore the app &rarr; Identify bugs &rarr; Write test code &rarr; Run the tests &rarr; Verify fixes&mdash;all <strong>without context overflow</strong>.</span>
+        </div>
+        <aside class="notes">Because each CLI interaction only returns a file path, the agent can do dozens of browser interactions in a single session without filling up the context window. With MCP, you'd hit degradation after 10-15 interactions.</aside>
+      </section>
+
+      <!-- SLIDE 14: USE CASE - UI REVIEW -->
+      <section>
+        <h2>Use Case: UI Review in the Agent Loop</h2>
+        <p style="color: #8b949e; font-size: 0.9em;">Low token cost makes <strong>iterative visual review</strong> practical.</p>
+        <div class="columns">
+          <div>
+            <div class="mermaid">
+              %%{init: {'theme': 'dark'}}%%
+              flowchart TD
+                A["1. Agent edits React component"] --> B["2. Starts dev server"]
+                B --> C["3. Opens browser via CLI"]
+                C --> D["4. Takes screenshot"]
+                D --> E{"5. Looks correct?"}
+                E -- No --> A
+                E -- Yes --> F["6. Commits changes"]
+            </div>
+          </div>
+          <div>
+            <h3 style="color: var(--accent-green); font-size: 0.95em;">Why this works with CLI</h3>
+            <ul style="font-size: 0.82em;">
+              <li>Each loop iteration costs <strong>minimal tokens</strong></li>
+              <li>Agent can iterate <strong>5-10 times</strong> without context pressure</li>
+              <li>Screenshots saved to disk for comparison</li>
+              <li>Snapshots let agent verify <strong>structure + visuals</strong></li>
+            </ul>
+            <div class="highlight-box orange fragment" style="margin-top: 12px; font-size: 0.82em;">
+              With MCP, each iteration floods context. <strong>With CLI, iterations are nearly free.</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 15: USE CASE - MULTI-SESSION -->
+      <section>
+        <h2>Use Case: Multi-Session Testing</h2>
+        <p style="color: #8b949e; font-size: 0.9em;">Test cross-role interactions with <strong>named sessions</strong>.</p>
+        <pre><code class="language-bash" data-trim>
+# Launch parallel sessions for different roles
+playwright-cli -s=admin open https://app.com/admin
+playwright-cli -s=user open https://app.com/dashboard
+
+# Admin creates a resource
+playwright-cli -s=admin snapshot
+playwright-cli -s=admin click e15
+
+# User verifies it appears
+playwright-cli -s=user snapshot
+playwright-cli -s=user click e8
+        </code></pre>
+        <div class="highlight-box blue fragment" style="font-size: 0.88em;">
+          <strong>Real-world scenario:</strong> Test that when an admin publishes a post, a regular user can see it&mdash;using two independent browser sessions controlled by the same agent.
+        </div>
+      </section>
+
+      <!-- SLIDE 16: ADVANCED FEATURES -->
+      <section>
+        <h2>Advanced Features</h2>
+        <div class="columns">
+          <div>
+            <h3 style="color: var(--accent-purple); font-size: 0.95em;">Network & State</h3>
+            <ul style="font-size: 0.82em;">
+              <li><strong>Network mocking</strong>
+                <pre style="font-size: 1em;"><code class="language-bash" data-trim>playwright-cli route "https://api.com/*" \
+  --status=200 --body='{"mock": true}'</code></pre>
+              </li>
+              <li><strong>State persistence</strong>
+                <pre style="font-size: 1em;"><code class="language-bash" data-trim>playwright-cli state-save logged-in.json
+playwright-cli state-load logged-in.json</code></pre>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--accent-purple); font-size: 0.95em;">Recording & Debug</h3>
+            <ul style="font-size: 0.82em;">
+              <li><strong>Video recording</strong>
+                <pre style="font-size: 1em;"><code class="language-bash" data-trim>playwright-cli video-start
+playwright-cli video-stop demo.webm</code></pre>
+              </li>
+              <li><strong>Tracing</strong>
+                <pre style="font-size: 1em;"><code class="language-bash" data-trim>playwright-cli tracing-start
+playwright-cli tracing-stop</code></pre>
+              </li>
+              <li><strong>Multi-browser</strong><br>
+                <span style="font-size: 0.9em; color: #8b949e;">Chromium, Firefox, WebKit, Edge</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 17: GETTING STARTED -->
+      <section>
+        <h2>Getting Started</h2>
+        <pre><code class="language-bash" data-trim>
+# Install
+npm install -g @playwright/cli@latest
+
+# Install browser binaries
+playwright-cli install-browser
+
+# Install skills for your coding agent
+playwright-cli install --skills
+
+# Start automating!
+playwright-cli open https://your-app.com --headed
+        </code></pre>
+        <div class="highlight-box green" style="margin-top: 16px;">
+          <strong>Requirements:</strong> Node.js 18+ &bull; A coding agent (Claude Code, GitHub Copilot, Cursor, Windsurf)
+        </div>
+        <p style="font-size: 0.88em; color: #8b949e; margin-top: 12px;">Or go skills-less: your agent can read commands directly from <code>playwright-cli --help</code></p>
+      </section>
+
+      <!-- SLIDE 18: WHEN TO USE WHAT -->
+      <section>
+        <h2>When to Use What</h2>
+        <p style="color: #8b949e; font-size: 0.9em;">They're <strong>complementary</strong>, not competing.</p>
+        <div class="columns" style="margin-top: 12px;">
+          <div>
+            <div class="highlight-box green">
+              <h3 style="color: var(--accent-green); margin: 0 0 8px 0; border: none; padding: 0;">Use CLI when</h3>
+              <ul style="font-size: 0.82em; margin-left: 0.8em;">
+                <li>Coding agent with <strong>shell access</strong></li>
+                <li>Token efficiency matters</li>
+                <li>Long automation sessions</li>
+                <li>CI/CD integration</li>
+                <li>Alongside existing test suites</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <div class="highlight-box orange">
+              <h3 style="color: var(--accent-orange); margin: 0 0 8px 0; border: none; padding: 0;">Use MCP when</h3>
+              <ul style="font-size: 0.82em; margin-left: 0.8em;">
+                <li>Sandboxed environment (<strong>no filesystem</strong>)</li>
+                <li>Short exploratory sessions</li>
+                <li>Need rich page awareness in context</li>
+                <li>Self-healing test workflows</li>
+                <li>Chat-based AI interfaces</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 19: KEY TAKEAWAYS -->
+      <section>
+        <h2>Key Takeaways</h2>
+        <ol>
+          <li>AI agents need browser access, but <strong>context windows are precious</strong></li>
+          <li><strong>Agent Skills</strong> provide a lean, composable way to extend capabilities</li>
+          <li>Playwright CLI saves state <strong>to disk</strong> instead of flooding the context</li>
+          <li><strong>4x fewer tokens</strong> than MCP for the same browser tasks</li>
+          <li><strong>50+ commands</strong> available through simple shell execution</li>
+          <li>The <strong>agent loop era</strong> demands token-efficient tools&mdash;CLI delivers</li>
+        </ol>
+        <blockquote style="margin-top: 20px;">
+          "Don't send the whole library into the model. Send the page number&mdash;and let the agent read the page when it's ready."
+        </blockquote>
+      </section>
+
+      <!-- SLIDE 20: THANK YOU -->
+      <section class="title-slide">
+        <h1>Thank You</h1>
+        <p class="subtitle" style="font-size: 0.9em;">Resources</p>
+        <div style="text-align: left; display: inline-block; margin-top: 20px; font-size: 0.75em; line-height: 2;">
+          <p><strong>Playwright CLI</strong> &mdash; <a href="https://github.com/microsoft/playwright-cli">github.com/microsoft/playwright-cli</a></p>
+          <p><strong>Playwright MCP</strong> &mdash; <a href="https://github.com/microsoft/playwright-mcp">github.com/microsoft/playwright-mcp</a></p>
+          <p><strong>Agent Skills Standard</strong> &mdash; <a href="https://agentskills.io">agentskills.io</a></p>
+          <p><strong>Claude Code Skills Docs</strong> &mdash; <a href="https://code.claude.com/docs/en/skills">code.claude.com/docs/en/skills</a></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/gh/PiDayDev/reveal-skip-fragments@master/skip-fragments.js"></script> -->
+<script>
+// Press V to View all fragments in current slide
+// Press C to hide (Conceal) all fragments in current slide
+const SkipFragments = (function (_Reveal) {
+    var Reveal = _Reveal
+
+    function showAll() {
+        let {h, v} = Reveal.getIndices();
+        Reveal.slide(h, v, +Infinity);
+    }
+    function hideAll() {
+        let {h, v} = Reveal.getIndices();
+        Reveal.slide(h, v, -1);
+    }
+
+    function installKeyBindings() {
+      console.log(Reveal)
+        const config = Reveal.getConfig();
+        if (!config.keyboard) {
+            return;
+        }
+        const shortcut = {
+            view: config.skipFragmentsShowShortcut || 'V',
+            hide: config.skipFragmentsHideShortcut || 'C'
+        };
+        const keyboard = config.keyboard === true ? {} : config.keyboard;
+        keyboard[shortcut.view.toUpperCase().charCodeAt(0)] = showAll;
+        keyboard[shortcut.hide.toUpperCase().charCodeAt(0)] = hideAll;
+
+        Reveal.registerKeyboardShortcut(shortcut.view, 'View slide fragments');
+        Reveal.registerKeyboardShortcut(shortcut.hide, 'Hide slide fragments');
+        Reveal.configure({
+            keyboard: keyboard
+        });
+    }
+
+    function install() {
+        installKeyBindings();
+    }
+
+    var Plugin = {};
+    Plugin.id = 'pdf-export';
+		Plugin.init = function( _Reveal ){
+			Reveal = _Reveal;
+			install();
+		};
+
+    return Plugin;
+
+})( Reveal );
+</script>>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      slideNumber: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealMermaid, SkipFragments],
+      pdfSeparateFragments: false,
+      fragments: false,
+    });
+  </script>
+</body>
+</html>

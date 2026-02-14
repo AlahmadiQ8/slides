@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =============================================
+       POWERPOINT-STYLE THEME
+       ============================================= */
+
+    :root {
+      /* Background */
+      --r-background-color: #ffffff;
+
+      /* Body text */
+      --r-main-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-main-font-size: 26px;
+      --r-main-color: #333333;
+
+      /* Headings */
+      --r-heading-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-heading-color: #1a3c6e;
+      --r-heading-font-weight: 700;
+      --r-heading-line-height: 1.2;
+      --r-heading-letter-spacing: -0.02em;
+      --r-heading-text-transform: none;
+      --r-heading-text-shadow: none;
+      --r-heading1-text-shadow: none;
+
+      /* Heading sizes */
+      --r-heading1-size: 2.0em;
+      --r-heading2-size: 1.4em;
+      --r-heading3-size: 1.1em;
+      --r-heading4-size: 0.95em;
+
+      /* Spacing */
+      --r-block-margin: 14px;
+      --r-heading-margin: 0 0 20px 0;
+
+      /* Code */
+      --r-code-font: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+
+      /* Accent */
+      --r-link-color: #0063B1;
+      --r-link-color-dark: #004e8c;
+      --r-link-color-hover: #3a8fd4;
+
+      /* Selection */
+      --r-selection-background-color: rgba(0, 99, 177, 0.25);
+      --r-selection-color: #000;
+    }
+
+    /* --- Global: left-aligned, top-aligned --- */
+    .reveal .slides {
+      text-align: left;
+    }
+
+    .reveal .slides section,
+    .reveal .slides section > section {
+      box-sizing: border-box;
+      padding: 48px 56px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    /* --- Headings: left-aligned, no transform --- */
+    .reveal h1, .reveal h2, .reveal h3,
+    .reveal h4, .reveal h5, .reveal h6 {
+      text-align: left;
+      text-transform: none;
+    }
+
+    /* Subtle bottom border on slide titles */
+    .reveal h2 {
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e0e4ea;
+      margin-bottom: 24px;
+    }
+
+    /* --- Title slide: centered, special styling --- */
+    .reveal .slides section.title-slide {
+      text-align: center;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .reveal .title-slide h1 {
+      text-align: center;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 16px;
+    }
+
+    .reveal .title-slide p {
+      text-align: center;
+      color: #555;
+    }
+
+    /* --- Paragraphs --- */
+    .reveal p {
+      line-height: 1.6;
+      margin: var(--r-block-margin) 0;
+    }
+
+    /* --- Lists: full-width, comfortable spacing --- */
+    .reveal ol, .reveal dl, .reveal ul {
+      display: block;
+      text-align: left;
+      margin: 0 0 0 1.2em;
+    }
+
+    .reveal li {
+      margin-bottom: 0.5em;
+      line-height: 1.5;
+    }
+
+    .reveal ul ul, .reveal ul ol,
+    .reveal ol ol, .reveal ol ul {
+      margin-left: 1.2em;
+      margin-top: 0.3em;
+    }
+
+    .reveal li > ul,
+    .reveal li > ol {
+      font-size: 0.92em;
+      color: #555;
+    }
+
+    /* --- Tables: corporate/striped (scoped to exclude code block tables) --- */
+    .reveal table:not(pre table) {
+      width: 100%;
+      margin: var(--r-block-margin) 0;
+      font-size: 0.82em;
+    }
+
+    .reveal table:not(pre table) th {
+      background-color: #1a3c6e;
+      color: #ffffff;
+      padding: 0.5em 0.8em;
+      font-weight: 600;
+      border-bottom: 2px solid #1a3c6e;
+    }
+
+    .reveal table:not(pre table) td {
+      padding: 0.5em 0.8em;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .reveal table:not(pre table) tbody tr:nth-child(even) {
+      background-color: #f5f7fa;
+    }
+
+    /* --- Blockquote: left accent bar --- */
+    .reveal blockquote {
+      width: 90%;
+      margin: var(--r-block-margin) 0;
+      padding: 0.6em 1.2em;
+      border-left: 4px solid var(--r-link-color);
+      background: #f0f5fa;
+      box-shadow: none;
+      font-style: italic;
+      color: #444;
+    }
+
+    /* --- Code blocks: flat, bordered --- */
+    .reveal pre {
+      width: 100%;
+      margin: var(--r-block-margin) 0;
+      box-shadow: none;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 0.52em;
+    }
+
+    .reveal pre code {
+      padding: 16px;
+    }
+
+    .reveal code {
+      font-size: 0.9em;
+    }
+
+    /* --- Images --- */
+    .reveal img {
+      margin: var(--r-block-margin) 0;
+      border-radius: 6px;
+    }
+
+    /* --- Strong text: accent color for emphasis --- */
+    .reveal strong, .reveal b {
+      font-weight: 700;
+      color: #1a3c6e;
+    }
+
+    /* --- Progress bar: thin accent --- */
+    .reveal .progress {
+      background: rgba(0, 0, 0, 0.08);
+      color: var(--r-link-color);
+      height: 4px;
+    }
+
+    .reveal .controls {
+      color: var(--r-link-color);
+    }
+
+    /* --- Slide number: subtle --- */
+    .reveal .slide-number {
+      font-family: var(--r-main-font);
+      font-size: 14px;
+      color: #999;
+      background: transparent;
+    }
+
+    /* --- Small helper --- */
+    .reveal .small { font-size: 0.6em; color: #888; }
+    .reveal .text-left { text-align: left; }
+
+    /* --- Mermaid diagram styling --- */
+    .reveal .mermaid { margin: 0.5em 0; }
+    .reveal .mermaid svg { max-height: 460px; }
+
+    /* --- Two-column flex helper --- */
+    .reveal .columns {
+      display: flex;
+      gap: 2em;
+      align-items: flex-start;
+    }
+    .reveal .columns > * { flex: 1; }
+
+    /* --- Print --- */
+    @media print {
+      .backgrounds { background-color: var(--r-background-color); }
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- TITLE SLIDE -->
+      <section class="title-slide">
+        <h1>{{TITLE}}</h1>
+        <p>{{SUBTITLE}}</p>
+        <p class="small">{{AUTHOR}} &mdash; {{DATE}}</p>
+      </section>
+
+      <!-- CONTENT SLIDES GO HERE -->
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      slideNumber: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      pdfSeparateFragments: false,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealMermaid]
+    });
+  </script>
+</body>
+</html>
