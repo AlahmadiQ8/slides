@@ -1,6 +1,6 @@
 # Slides
 
-Presentation decks built with [reveal.js](https://revealjs.com/).
+Vibe coded slides with [reveal.js](https://revealjs.com/) using [revealjs skill](https://github.com/AlahmadiQ8/skills).
 
 ## Presentations
 
