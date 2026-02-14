@@ -29,7 +29,7 @@ jobs:
 
       - name: Install playwright-cli and browser
         run: |
-          npm install -g @anthropic-ai/playwright-cli
+          npm install -g @playwright/cli@latest
           playwright-cli install-browser
 
       - name: Update README and generate OG images
