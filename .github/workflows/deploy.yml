@@ -30,7 +30,7 @@ jobs:
       - name: Install playwright-cli and browser
         run: |
           npm install -g @playwright/cli@latest
-          playwright-cli install-browser
+          npx playwright install --with-deps chromium
 
       - name: Update README and generate OG images
         run: scripts/update-readme.sh
