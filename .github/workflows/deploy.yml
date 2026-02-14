@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update README with slides list
+        run: scripts/update-readme.sh
+
+      - name: Commit README if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || (git commit -m "docs: update slides list [skip ci]" && git push)
+
+      - name: Build index.html from README
+        run: pandoc README.md --standalone --metadata title="Slides" --include-in-header=scripts/index-style.html -o index.html
+
+      - name: Assemble site
+        run: |
+          mkdir _site
+          cp index.html _site/
+          cp -r slides _site/
+
+      - uses: actions/upload-pages-artifact@v3
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
