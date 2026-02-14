@@ -23,15 +23,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update README with slides list
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install playwright-cli and browser
+        run: |
+          npm install -g @anthropic-ai/playwright-cli
+          playwright-cli install-browser
+
+      - name: Update README and generate OG images
         run: scripts/update-readme.sh
 
-      - name: Commit README if changed
+      - name: Commit README and OG images if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git diff --cached --quiet || (git commit -m "docs: update slides list [skip ci]" && git push)
+          git add README.md slides/*-og.png
+          git diff --cached --quiet || (git commit -m "docs: update slides list and OG images [skip ci]" && git push)
 
       - name: Install pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
