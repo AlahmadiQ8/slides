@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git Worktrees: Master Parallel Development</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==============================================
+       DARK DEVELOPER THEME — GIT WORKTREES
+       ============================================== */
+    :root {
+      --r-background-color: #0F1923;
+      --r-main-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-main-font-size: 24px;
+      --r-main-color: #CBD5E1;
+      --r-heading-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-heading-color: #FFFFFF;
+      --r-heading-font-weight: 800;
+      --r-heading-line-height: 1.15;
+      --r-heading-letter-spacing: -0.02em;
+      --r-heading-text-transform: none;
+      --r-heading-text-shadow: none;
+      --r-heading1-text-shadow: none;
+      --r-heading1-size: 2.2em;
+      --r-heading2-size: 1.5em;
+      --r-heading3-size: 1.15em;
+      --r-heading4-size: 0.95em;
+      --r-block-margin: 12px;
+      --r-heading-margin: 0 0 18px 0;
+      --r-code-font: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+      --r-link-color: #0EA5E9;
+      --r-link-color-dark: #0284C7;
+      --r-link-color-hover: #38BDF8;
+      --r-selection-background-color: rgba(14, 165, 233, 0.3);
+      --r-selection-color: #fff;
+      /* Custom palette */
+      --git-orange: #F05032;
+      --git-green: #2EA44F;
+      --teal: #0EA5E9;
+      --amber: #F59E0B;
+      --card-bg: #182635;
+      --card-bg-alt: #1E3148;
+      --code-bg: #0D1117;
+      --muted: #64748B;
+    }
+
+    .reveal .slides { text-align: left; }
+
+    .reveal .slides section,
+    .reveal .slides section > section {
+      box-sizing: border-box;
+      padding: 42px 56px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .reveal h1, .reveal h2, .reveal h3,
+    .reveal h4, .reveal h5, .reveal h6 {
+      text-align: left;
+      text-transform: none;
+    }
+
+    .reveal h2 {
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--git-orange);
+      margin-bottom: 22px;
+    }
+
+    /* Title slide */
+    .reveal .slides section.title-slide {
+      text-align: center;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    .reveal .title-slide h1 {
+      text-align: center;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 12px;
+    }
+    .reveal .title-slide p { text-align: center; }
+
+    /* Paragraphs */
+    .reveal p { line-height: 1.6; margin: var(--r-block-margin) 0; }
+
+    /* Lists */
+    .reveal ol, .reveal dl, .reveal ul {
+      display: block; text-align: left; margin: 0 0 0 1.2em;
+    }
+    .reveal li { margin-bottom: 0.45em; line-height: 1.5; }
+    .reveal ul ul, .reveal ul ol,
+    .reveal ol ol, .reveal ol ul { margin-left: 1.2em; margin-top: 0.3em; }
+    .reveal li > ul, .reveal li > ol { font-size: 0.92em; color: #94A3B8; }
+
+    /* Tables */
+    .reveal table:not(pre table) {
+      width: 100%; margin: var(--r-block-margin) 0; font-size: 0.78em;
+      border-collapse: collapse;
+    }
+    .reveal table:not(pre table) th {
+      background-color: var(--card-bg-alt);
+      color: var(--teal);
+      padding: 0.5em 0.8em;
+      font-weight: 700;
+      border-bottom: 2px solid var(--teal);
+      text-align: center;
+    }
+    .reveal table:not(pre table) td {
+      padding: 0.5em 0.8em;
+      border-bottom: 1px solid #1E293B;
+      text-align: center;
+    }
+    .reveal table:not(pre table) tbody tr:nth-child(even) {
+      background-color: var(--card-bg);
+    }
+
+    /* Blockquote */
+    .reveal blockquote {
+      width: 92%; margin: var(--r-block-margin) 0;
+      padding: 0.6em 1.2em;
+      border-left: 4px solid var(--teal);
+      background: var(--card-bg);
+      box-shadow: none; font-style: italic; color: #94A3B8;
+    }
+
+    /* Code blocks */
+    .reveal pre {
+      width: 100%; margin: var(--r-block-margin) 0;
+      box-shadow: none;
+      border: 1px solid #1E293B;
+      border-left: 3px solid var(--git-green);
+      border-radius: 6px;
+      font-size: 0.52em;
+      background: var(--code-bg);
+    }
+    .reveal pre code { padding: 16px; background: var(--code-bg); }
+    .reveal code { font-size: 0.88em; }
+    .reveal :not(pre) > code {
+      background: var(--card-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      color: var(--git-green);
+      font-size: 0.88em;
+    }
+
+    /* Images */
+    .reveal img { margin: var(--r-block-margin) 0; border-radius: 6px; }
+
+    /* Strong text */
+    .reveal strong, .reveal b { font-weight: 700; color: var(--teal); }
+
+    /* Progress bar */
+    .reveal .progress { background: rgba(255,255,255,0.05); color: var(--git-orange); height: 4px; }
+    .reveal .controls { color: var(--teal); }
+    .reveal .slide-number {
+      font-family: var(--r-main-font); font-size: 13px;
+      color: var(--muted); background: transparent;
+    }
+
+    /* Helpers */
+    .reveal .small { font-size: 0.6em; color: var(--muted); }
+    .reveal .muted { color: var(--muted); }
+    .reveal .accent-orange { color: var(--git-orange); }
+    .reveal .accent-green { color: var(--git-green); }
+    .reveal .accent-teal { color: var(--teal); }
+    .reveal .accent-amber { color: var(--amber); }
+
+    /* Columns */
+    .reveal .columns { display: flex; gap: 1.8em; align-items: flex-start; }
+    .reveal .columns > * { flex: 1; }
+
+    /* Card helper */
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--teal);
+    }
+    .card.orange { border-left-color: var(--git-orange); }
+    .card.green { border-left-color: var(--git-green); }
+    .card.amber { border-left-color: var(--amber); }
+    .card h3 { margin: 0 0 6px 0; font-size: 0.95em; border: none; padding: 0; }
+
+    /* Icon-label row */
+    .icon-row { display: flex; align-items: center; gap: 0.6em; margin-bottom: 0.3em; }
+    .icon-row .emoji { font-size: 1.3em; }
+
+    /* Callout box */
+    .callout {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-top: 14px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .callout.error { background: #2A1215; color: var(--git-orange); border: 1px solid #4A1D20; }
+    .callout.success { background: #0F2918; color: var(--git-green); border: 1px solid #1A4A28; }
+    .callout.info { background: #0F1F2E; color: var(--teal); border: 1px solid #163350; }
+    .callout.warning { background: #2A2215; color: var(--amber); border: 1px solid #4A3D1D; }
+
+    /* Step row */
+    .step-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+    .step-num {
+      flex-shrink: 0; width: 32px; height: 32px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.75em;
+      color: var(--r-background-color);
+    }
+    .step-num.orange { background: var(--git-orange); }
+    .step-num.green { background: var(--git-green); }
+    .step-num.teal { background: var(--teal); }
+    .step-content { flex: 1; }
+    .step-content .label { font-weight: 700; color: #fff; font-size: 0.88em; }
+    .step-content code { font-size: 0.82em; }
+
+    /* Stats row */
+    .stats { display: flex; gap: 1.2em; margin: 16px 0; }
+    .stat-card {
+      flex: 1; background: var(--card-bg); border-radius: 8px;
+      padding: 16px; text-align: center;
+    }
+    .stat-card .num { font-size: 2.4em; font-weight: 800; line-height: 1.1; }
+    .stat-card .unit { font-size: 0.85em; font-weight: 600; margin-top: 2px; }
+    .stat-card .desc { font-size: 0.65em; color: var(--muted); margin-top: 4px; }
+
+    /* X / Check list */
+    .verdict-list { list-style: none; margin: 0; padding: 0; }
+    .verdict-list li { margin-bottom: 0.4em; padding-left: 0; }
+    .verdict-list li::before { margin-right: 0.5em; font-weight: 700; }
+    .verdict-list li.bad::before { content: "✗"; color: var(--git-orange); }
+    .verdict-list li.good::before { content: "✓"; color: var(--git-green); }
+
+    /* Mermaid */
+    .reveal .mermaid { margin: 0.5em 0; }
+    .reveal .mermaid svg { max-height: 420px; }
+
+    /* Print */
+    @media print { .backgrounds { background-color: var(--r-background-color); } }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ====================================== -->
+      <!-- SLIDE 1: TITLE -->
+      <!-- ====================================== -->
+      <section class="title-slide" data-background-color="#0F1923">
+        <div style="font-size: 3em; margin-bottom: 12px;">🌳</div>
+        <h1>Git Worktrees</h1>
+        <p style="color: var(--teal); font-size: 1.1em; font-weight: 600;">Master Parallel Development</p>
+        <p style="color: var(--muted); font-size: 0.65em; max-width: 600px; margin-top: 16px;">
+          Work on multiple branches simultaneously &mdash; without stashing, cloning, or losing context.
+        </p>
+        <p class="small" style="margin-top: 24px;">An Educational Guide for Developers</p>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 2: LEARNING OBJECTIVES -->
+      <!-- ====================================== -->
+      <section>
+        <h2>What You'll Learn</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px;">
+          <div class="card">
+            <div class="icon-row"><span class="emoji">💡</span><h3 class="accent-amber" style="margin:0">Understand</h3></div>
+            <p style="font-size:0.78em; margin:4px 0 0 0;">What git worktrees are and how they work under the hood</p>
+          </div>
+          <div class="card green">
+            <div class="icon-row"><span class="emoji">⌨️</span><h3 class="accent-green" style="margin:0">Apply</h3></div>
+            <p style="font-size:0.78em; margin:4px 0 0 0;">Essential commands to create, manage, and remove worktrees</p>
+          </div>
+          <div class="card orange">
+            <div class="icon-row"><span class="emoji">⚡</span><h3 class="accent-orange" style="margin:0">Compare</h3></div>
+            <p style="font-size:0.78em; margin:4px 0 0 0;">When to use worktrees vs stash vs clone</p>
+          </div>
+          <div class="card">
+            <div class="icon-row"><span class="emoji">🚀</span><h3 class="accent-teal" style="margin:0">Implement</h3></div>
+            <p style="font-size:0.78em; margin:4px 0 0 0;">Best practices and real-world workflows for daily development</p>
+          </div>
+        </div>
+        <p class="muted" style="font-size:0.6em; font-style:italic; margin-top:16px;">By the end, you'll be ready to integrate worktrees into your daily workflow.</p>
+        <aside class="notes">Set expectations: 4 learning outcomes mapped to Bloom's taxonomy.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 3: THE PROBLEM -->
+      <!-- ====================================== -->
+      <section>
+        <h2>The Problem <span class="accent-orange" style="font-size:0.6em; font-weight:500;">Sound familiar?</span></h2>
+        <p style="font-size:0.85em;">You're deep in a feature branch, files open everywhere&hellip;<br>
+        Then an <strong class="accent-orange">urgent production bug</strong> lands in your inbox. Now you have to:</p>
+        <ul class="verdict-list" style="font-size: 0.82em;">
+          <li class="bad fragment">Stash your half-done work (and hope you remember to pop it)</li>
+          <li class="bad fragment">Switch branches &mdash; wait for IDE re-indexing and rebuilds</li>
+          <li class="bad fragment">Fix the bug, commit, push, switch back</li>
+          <li class="bad fragment">Pop stash &mdash; pray there are no merge conflicts</li>
+          <li class="bad fragment">Try to remember where you left off&hellip;</li>
+        </ul>
+        <div class="callout error fragment" style="font-size:0.8em;">
+          Result: Lost focus, wasted time, and increased risk of mistakes.
+        </div>
+        <aside class="notes">Story-driven motivation. Let the audience feel the pain before showing the solution.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 4: WHAT IS A GIT WORKTREE -->
+      <!-- ====================================== -->
+      <section>
+        <h2>What is a Git Worktree?</h2>
+        <blockquote style="font-size:0.88em;">
+          A worktree is an <strong>additional working directory</strong> linked to the same Git repository.
+          Each checks out a different branch, has its own staging area, but shares the same commit history and object database.
+        </blockquote>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px;">
+          <div class="card fragment">
+            <div class="icon-row"><span class="emoji">📂</span><h3 class="accent-teal" style="margin:0">Separate Directories</h3></div>
+            <p style="font-size:0.75em; margin:4px 0 0;">Each worktree lives in its own folder on disk</p>
+          </div>
+          <div class="card fragment">
+            <div class="icon-row"><span class="emoji">🔗</span><h3 class="accent-teal" style="margin:0">Shared History</h3></div>
+            <p style="font-size:0.75em; margin:4px 0 0;">All worktrees share the same .git object database</p>
+          </div>
+          <div class="card green fragment">
+            <div class="icon-row"><span class="emoji">🛡️</span><h3 class="accent-green" style="margin:0">Branch Isolation</h3></div>
+            <p style="font-size:0.75em; margin:4px 0 0;">Each worktree is locked to one branch at a time</p>
+          </div>
+          <div class="card green fragment">
+            <div class="icon-row"><span class="emoji">🔄</span><h3 class="accent-green" style="margin:0">Instant Sync</h3></div>
+            <p style="font-size:0.75em; margin:4px 0 0;">Commits in one worktree are visible in all others</p>
+          </div>
+        </div>
+        <aside class="notes">Core definition slide. Fragments help pace the explanation of 4 properties.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 5: HOW IT WORKS — ARCHITECTURE -->
+      <!-- ====================================== -->
+      <section>
+        <h2>How It Works Under the Hood</h2>
+        <div class="columns">
+          <div>
+            <div class="mermaid">
+              %%{init: {'theme': 'dark'}}%%
+              flowchart TD
+                GIT["🗄️ .git/ (Shared)<br/>Objects • Refs • Config"]
+                W1["📁 repo/<br/><b>main</b><br/>(Primary Worktree)"]
+                W2["📁 ../feature-x/<br/><b>feature-x</b><br/>(Linked Worktree)"]
+                W3["📁 ../hotfix/<br/><b>hotfix/bug</b><br/>(Linked Worktree)"]
+                GIT -.-> W1
+                GIT -.-> W2
+                GIT -.-> W3
+                style GIT fill:#1A3A2A,stroke:#2EA44F,color:#fff
+                style W1 fill:#182635,stroke:#0EA5E9,color:#CBD5E1
+                style W2 fill:#182635,stroke:#0EA5E9,color:#CBD5E1
+                style W3 fill:#182635,stroke:#0EA5E9,color:#CBD5E1
+            </div>
+          </div>
+          <div>
+            <ul style="font-size: 0.78em; margin-top: 10px;">
+              <li class="fragment">One <code>.git</code> directory stores <strong>all</strong> objects and refs</li>
+              <li class="fragment">Each worktree gets its own <strong>working directory</strong> + staging area</li>
+              <li class="fragment">Linked worktrees contain a lightweight <code>.git</code> file (a pointer back)</li>
+              <li class="fragment">No duplicate history = <strong>minimal disk usage</strong></li>
+            </ul>
+            <div class="callout info fragment" style="font-size: 0.72em;">
+              All worktrees share one .git directory &mdash; no duplicate history, minimal disk usage.
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Visual architecture. The Mermaid diagram shows the shared .git model. Walk through each bullet.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 6: ESSENTIAL COMMANDS -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Essential Commands</h2>
+        <table>
+          <thead>
+            <tr><th style="text-align:left;">Command</th><th>What It Does</th></tr>
+          </thead>
+          <tbody>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree add &lt;dir&gt; -b &lt;branch&gt;</code></td>
+              <td>New worktree + new branch</td>
+            </tr>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree add &lt;dir&gt; &lt;branch&gt;</code></td>
+              <td>Worktree for an existing branch</td>
+            </tr>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree list</code></td>
+              <td>List all active worktrees</td>
+            </tr>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree remove &lt;dir&gt;</code></td>
+              <td>Remove a worktree cleanly</td>
+            </tr>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree prune</code></td>
+              <td>Clean up stale metadata</td>
+            </tr>
+            <tr class="fragment">
+              <td style="text-align:left;"><code>git worktree lock &lt;dir&gt;</code></td>
+              <td>Prevent pruning a worktree</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warning fragment" style="font-size: 0.72em;">
+          💡 A branch can only be checked out in <strong class="accent-amber">one worktree at a time</strong>.
+        </div>
+        <aside class="notes">Reference slide. Each row reveals as a fragment. Emphasize the one-branch-per-worktree rule.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 7: LIVE DEMO — COMMANDS IN ACTION -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Commands in Action</h2>
+        <pre><code class="language-bash" data-trim data-line-numbers="1-2|4-5|7-8|10-11|13-14">
+# 1. Create a worktree for a new feature
+$ git worktree add ../feature-login -b feature/login
+
+# 2. See all your worktrees
+$ git worktree list
+
+# 3. Switch context — just cd!
+$ cd ../feature-login
+
+# 4. When you're done, remove it
+$ git worktree remove ../feature-login
+
+# 5. Clean up any stale references
+$ git worktree prune
+        </code></pre>
+        <div class="callout success fragment" style="font-size:0.75em;">
+          That's it. No stashing. No re-cloning. Just <code>add</code>, <code>cd</code>, and <code>remove</code>.
+        </div>
+        <aside class="notes">Step-through code demo. Use data-line-numbers to highlight each command group progressively.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 8: WORKFLOW — THE HOTFIX SCENARIO -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Workflow: The Hotfix Scenario</h2>
+        <div style="font-size: 0.8em;">
+          <div class="step-row fragment">
+            <div class="step-num teal">1</div>
+            <div class="step-content">
+              <div class="label">You're working on a feature</div>
+              <code>cd ~/repo &nbsp;# on branch feature/dashboard</code>
+            </div>
+          </div>
+          <div class="step-row fragment">
+            <div class="step-num orange">2</div>
+            <div class="step-content">
+              <div class="label accent-orange">Urgent bug report arrives! 🚨</div>
+              <code># No need to stash or commit anything</code>
+            </div>
+          </div>
+          <div class="step-row fragment">
+            <div class="step-num green">3</div>
+            <div class="step-content">
+              <div class="label">Spin up a hotfix worktree</div>
+              <code>git worktree add ../hotfix -b hotfix/critical</code>
+            </div>
+          </div>
+          <div class="step-row fragment">
+            <div class="step-num green">4</div>
+            <div class="step-content">
+              <div class="label">Fix the bug in isolation</div>
+              <code>cd ../hotfix && vim src/api.js &nbsp;# fix & commit</code>
+            </div>
+          </div>
+          <div class="step-row fragment">
+            <div class="step-num teal">5</div>
+            <div class="step-content">
+              <div class="label">Push & return to your feature</div>
+              <code>git push && cd ~/repo &nbsp;# right where you left off</code>
+            </div>
+          </div>
+          <div class="step-row fragment">
+            <div class="step-num teal">6</div>
+            <div class="step-content">
+              <div class="label muted">Clean up when done</div>
+              <code>git worktree remove ../hotfix</code>
+            </div>
+          </div>
+        </div>
+        <div class="callout success fragment" style="font-size: 0.72em;">
+          Your feature branch stays untouched the entire time. Zero context loss. ✨
+        </div>
+        <aside class="notes">The killer use case. Walk through step-by-step, emphasizing that the feature branch is never disturbed.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 9: WHEN TO USE WORKTREES -->
+      <!-- ====================================== -->
+      <section>
+        <h2>When to Use Worktrees</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="card orange fragment">
+            <div class="icon-row"><span class="emoji">⚡</span><h3 class="accent-orange" style="margin:0">Emergency Hotfixes</h3></div>
+            <p style="font-size:0.72em; margin:6px 0 0;">Fix production bugs without disrupting your current feature work. No stashing needed.</p>
+          </div>
+          <div class="card fragment">
+            <div class="icon-row"><span class="emoji">🔍</span><h3 class="accent-teal" style="margin:0">Code Reviews</h3></div>
+            <p style="font-size:0.72em; margin:6px 0 0;">Check out a teammate's PR branch in a separate directory to test and review it.</p>
+          </div>
+          <div class="card green fragment">
+            <div class="icon-row"><span class="emoji">🌿</span><h3 class="accent-green" style="margin:0">Parallel Features</h3></div>
+            <p style="font-size:0.72em; margin:6px 0 0;">Work on multiple features simultaneously, each in its own directory and IDE window.</p>
+          </div>
+          <div class="card amber fragment">
+            <div class="icon-row"><span class="emoji">🛡️</span><h3 class="accent-amber" style="margin:0">Multi-Version Testing</h3></div>
+            <p style="font-size:0.72em; margin:6px 0 0;">Test your code against multiple release branches at once for compatibility.</p>
+          </div>
+        </div>
+        <aside class="notes">Four high-value use cases. Each card reveals with a fragment for pacing.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 10: WORKTREE vs STASH vs CLONE -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Worktree vs Stash vs Clone</h2>
+        <table style="font-size: 0.72em;">
+          <thead>
+            <tr>
+              <th style="text-align:left;"></th>
+              <th><span class="accent-green">git worktree</span></th>
+              <th><span class="accent-amber">git stash</span></th>
+              <th><span style="color:var(--muted)">git clone</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Disk Usage</td>
+              <td><strong class="accent-green">Low</strong></td>
+              <td>Minimal</td>
+              <td>High (full copy)</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Active Branches</td>
+              <td><strong class="accent-green">Multiple parallel</strong></td>
+              <td>One at a time</td>
+              <td>Multiple (separate)</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Context Loss</td>
+              <td><strong class="accent-green">None</strong></td>
+              <td>Possible</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Setup Cost</td>
+              <td><strong class="accent-green">Low (add/cd)</strong></td>
+              <td>Low (stash/pop)</td>
+              <td>High (clone/setup)</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Shared History</td>
+              <td><strong class="accent-green">Yes</strong></td>
+              <td>Yes</td>
+              <td>No (independent)</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">IDE Windows</td>
+              <td><strong class="accent-green">Multiple</strong></td>
+              <td>One</td>
+              <td>Multiple</td>
+            </tr>
+            <tr>
+              <td style="text-align:left; color:var(--muted); font-weight:600;">Best For</td>
+              <td><strong class="accent-green">Parallel dev</strong></td>
+              <td>Quick switches</td>
+              <td>Full isolation</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout success" style="font-size:0.72em; margin-top: 10px;">
+          Worktrees combine the best of both worlds &mdash; parallel branches with minimal overhead.
+        </div>
+        <aside class="notes">Decision-making slide. Worktree wins in almost every category for day-to-day development. Stash for trivial switches, clone for total isolation.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 11: BENEFITS AT A GLANCE -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Benefits at a Glance</h2>
+        <div class="stats">
+          <div class="stat-card">
+            <div class="num accent-green">0</div>
+            <div class="unit accent-green">stashes</div>
+            <div class="desc">No more forgotten stash entries</div>
+          </div>
+          <div class="stat-card">
+            <div class="num accent-teal">1</div>
+            <div class="unit accent-teal">fetch</div>
+            <div class="desc">One fetch updates all worktrees</div>
+          </div>
+          <div class="stat-card">
+            <div class="num accent-orange">∞</div>
+            <div class="unit accent-orange">branches</div>
+            <div class="desc">Unlimited parallel branches on disk</div>
+          </div>
+        </div>
+        <ul style="font-size: 0.8em;">
+          <li class="fragment"><strong>Zero context-switching overhead</strong> &mdash; just change directories</li>
+          <li class="fragment"><strong>IDE stays configured</strong> per worktree &mdash; no re-indexing</li>
+          <li class="fragment"><strong>Run builds and tests</strong> on separate branches simultaneously</li>
+          <li class="fragment"><strong>Compare branches side-by-side</strong> in different editor windows</li>
+          <li class="fragment"><strong>Reduces accidental commits</strong> to the wrong branch</li>
+        </ul>
+        <aside class="notes">Reinforce the value proposition with concrete stats and benefits.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 12: BEST PRACTICES -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Best Practices</h2>
+        <div style="font-size: 0.82em;">
+          <div class="card fragment" style="padding: 12px 18px;">
+            <div class="icon-row"><span class="emoji">📁</span><strong>Organize Worktree Directories</strong></div>
+            <p style="font-size:0.85em; margin:2px 0 0;">Keep worktrees as siblings: <code>workspace/repo/</code> &nbsp; <code>workspace/feature-x/</code> &nbsp; <code>workspace/hotfix/</code></p>
+          </div>
+          <div class="card green fragment" style="padding: 12px 18px;">
+            <div class="icon-row"><span class="emoji">🏷️</span><strong class="accent-green">Use Descriptive Names</strong></div>
+            <p style="font-size:0.85em; margin:2px 0 0;">Name directories after branches: <code>feature-login</code>, <code>hotfix-api-crash</code></p>
+          </div>
+          <div class="card orange fragment" style="padding: 12px 18px;">
+            <div class="icon-row"><span class="emoji">🧹</span><strong class="accent-orange">Clean Up After Yourself</strong></div>
+            <p style="font-size:0.85em; margin:2px 0 0;">Always <code>git worktree remove</code> &mdash; don't just delete folders. Run <code>prune</code> periodically.</p>
+          </div>
+          <div class="card amber fragment" style="padding: 12px 18px;">
+            <div class="icon-row"><span class="emoji">🔒</span><strong class="accent-amber">Lock Important Worktrees</strong></div>
+            <p style="font-size:0.85em; margin:2px 0 0;">Use <code>git worktree lock</code> for long-lived worktrees to prevent accidental pruning.</p>
+          </div>
+          <div class="card fragment" style="padding: 12px 18px;">
+            <div class="icon-row"><span class="emoji">📋</span><strong>Monitor with <code>git worktree list</code></strong></div>
+            <p style="font-size:0.85em; margin:2px 0 0;">Regularly check active worktrees to avoid orphaned directories.</p>
+          </div>
+        </div>
+        <aside class="notes">Operational excellence. These tips prevent the most common mistakes with worktrees.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 13: COMMON PITFALLS -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Common Pitfalls to Avoid</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.82em;">
+          <div class="card orange fragment" style="background: #2A1215; border-left-color: var(--git-orange);">
+            <h3 class="accent-orange" style="margin: 0 0 4px;">⚠️ Same Branch in Two Worktrees</h3>
+            <p style="font-size:0.88em; margin:0;">Git won't allow the same branch in multiple worktrees. Use <code>-b</code> to create a new branch.</p>
+          </div>
+          <div class="card orange fragment" style="background: #2A1215; border-left-color: var(--git-orange);">
+            <h3 class="accent-orange" style="margin: 0 0 4px;">⚠️ Deleting Folders Manually</h3>
+            <p style="font-size:0.88em; margin:0;">Don't <code>rm -rf</code> a worktree! Always use <code>git worktree remove</code>, or run <code>prune</code> afterward.</p>
+          </div>
+          <div class="card amber fragment" style="background: #2A2215; border-left-color: var(--amber);">
+            <h3 class="accent-amber" style="margin: 0 0 4px;">⚠️ Forgetting About Worktrees</h3>
+            <p style="font-size:0.88em; margin:0;">Orphaned worktrees waste disk space. Run <code>git worktree list</code> regularly.</p>
+          </div>
+          <div class="card amber fragment" style="background: #2A2215; border-left-color: var(--amber);">
+            <h3 class="accent-amber" style="margin: 0 0 4px;">⚠️ Submodule Complications</h3>
+            <p style="font-size:0.88em; margin:0;">Submodules need manual init in each worktree: <code>git submodule update --init</code></p>
+          </div>
+        </div>
+        <div class="callout warning fragment" style="font-size: 0.72em; margin-top: 14px;">
+          💡 Use shell aliases for common worktree operations to build muscle memory.
+        </div>
+        <aside class="notes">Error prevention. Two critical pitfalls (red) and two warnings (amber).</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 14: KEY TAKEAWAYS -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Key Takeaways</h2>
+        <ol style="font-size: 0.84em; margin-top: 8px;">
+          <li class="fragment">Git worktrees let you work on <strong>multiple branches in parallel</strong> &mdash; each in its own directory.</li>
+          <li class="fragment">They share one <code>.git</code> database, making them <strong>far more efficient</strong> than multiple clones.</li>
+          <li class="fragment">Worktrees <strong>eliminate the need for stashing</strong> and reduce context-switching friction.</li>
+          <li class="fragment">Use them for <strong>hotfixes, code reviews, parallel features</strong>, and multi-version testing.</li>
+          <li class="fragment">Always clean up: <code>git worktree remove</code> when done, <code>git worktree prune</code> periodically.</li>
+        </ol>
+        <div class="callout info fragment" style="font-size: 0.75em; margin-top: 16px;">
+          Start small: next time you need a hotfix, reach for <code>git worktree add</code> instead of <code>git stash</code>.
+        </div>
+        <aside class="notes">Spaced repetition — revisit the 5 most important concepts. Encourage starting small.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 15: QUICK REFERENCE CARD -->
+      <!-- ====================================== -->
+      <section>
+        <h2>Quick Reference Card <span class="muted" style="font-size:0.5em; font-weight:400;">save this slide</span></h2>
+        <div class="columns" style="font-size: 0.78em;">
+          <div>
+            <h3 class="accent-green" style="border:none; padding:0; margin: 0 0 10px;">Create &amp; Manage</h3>
+            <pre><code class="language-bash" data-trim>
+# New worktree + new branch
+git worktree add &lt;dir&gt; -b &lt;branch&gt;
+
+# Worktree from existing branch
+git worktree add &lt;dir&gt; &lt;branch&gt;
+
+# Show all worktrees
+git worktree list
+
+# Relocate a worktree
+git worktree move &lt;old&gt; &lt;new&gt;
+            </code></pre>
+          </div>
+          <div>
+            <h3 class="accent-orange" style="border:none; padding:0; margin: 0 0 10px;">Cleanup &amp; Maintenance</h3>
+            <pre><code class="language-bash" data-trim>
+# Remove a worktree cleanly
+git worktree remove &lt;dir&gt;
+
+# Clean stale metadata
+git worktree prune
+
+# Protect from pruning
+git worktree lock &lt;dir&gt;
+
+# Allow pruning again
+git worktree unlock &lt;dir&gt;
+            </code></pre>
+          </div>
+        </div>
+        <div class="callout info" style="font-size: 0.68em; margin-top: 8px;">
+          <strong>When to reach for worktrees:</strong> Urgent hotfix while mid-feature &bull; Reviewing a PR &bull; Parallel feature development &bull; Testing across release branches
+        </div>
+        <aside class="notes">Cheat sheet slide. Audience can screenshot or bookmark this one.</aside>
+      </section>
+
+      <!-- ====================================== -->
+      <!-- SLIDE 16: CLOSING -->
+      <!-- ====================================== -->
+      <section class="title-slide" data-background-color="#0F1923">
+        <div style="font-size: 3em; margin-bottom: 12px;">🚀</div>
+        <h1>Now Go Try It!</h1>
+        <p style="color: var(--muted); font-size: 0.8em;">Open your terminal and run:</p>
+        <pre style="display: inline-block; width: auto; border-left: 3px solid var(--git-green); font-size: 0.52em; margin: 16px auto;"><code class="language-bash" data-trim>
+git worktree add ../my-experiment -b experiment
+        </code></pre>
+        <div style="margin-top: 24px; font-size: 0.6em; color: var(--muted);">
+          <p style="margin: 4px 0;"><strong class="accent-teal">Resources</strong></p>
+          <p style="margin: 2px 0;">Official Git Docs &mdash; <a href="https://git-scm.com/docs/git-worktree">git-scm.com/docs/git-worktree</a></p>
+          <p style="margin: 2px 0;">DataCamp Tutorial &mdash; <a href="https://www.datacamp.com/tutorial/git-worktree-tutorial">datacamp.com/tutorial/git-worktree-tutorial</a></p>
+          <p style="margin: 2px 0;">DevGuide Tutorial &mdash; <a href="https://devguide.dev/blog/git-worktree-tutorial">devguide.dev/blog/git-worktree-tutorial</a></p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      slideNumber: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      fragments: false,
+      pdfSeparateFragments: false,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealMermaid]
+    });
+  </script>
+</body>
+</html>
