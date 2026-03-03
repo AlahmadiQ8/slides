@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power BI BPA Auto-Fix - GitHub Copilot SDK</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --r-background-color: #ffffff;
+      --r-main-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-main-font-size: 26px;
+      --r-main-color: #333333;
+      --r-heading-font: 'Inter', 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      --r-heading-color: #1a3c6e;
+      --r-heading-font-weight: 700;
+      --r-heading-line-height: 1.2;
+      --r-heading-letter-spacing: -0.02em;
+      --r-heading-text-transform: none;
+      --r-heading-text-shadow: none;
+      --r-heading1-text-shadow: none;
+      --r-heading1-size: 2.0em;
+      --r-heading2-size: 1.4em;
+      --r-heading3-size: 1.1em;
+      --r-block-margin: 14px;
+      --r-heading-margin: 0 0 20px 0;
+      --r-code-font: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+      --r-link-color: #0063B1;
+      --r-link-color-hover: #3a8fd4;
+      --r-selection-background-color: rgba(0, 99, 177, 0.25);
+    }
+
+    .reveal .slides { text-align: left; }
+    .reveal .slides section { box-sizing: border-box; padding: 48px 56px; line-height: 1.6; text-align: left; }
+    .reveal h1, .reveal h2, .reveal h3 { text-align: left; text-transform: none; }
+    .reveal h2 { padding-bottom: 12px; border-bottom: 2px solid #e0e4ea; margin-bottom: 24px; }
+
+    .reveal .slides section.title-slide {
+      text-align: center;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    .reveal .title-slide h1 { text-align: center; border-bottom: none; padding-bottom: 0; margin-bottom: 16px; }
+    .reveal .title-slide p { text-align: center; color: #555; }
+
+    .reveal p { line-height: 1.6; margin: var(--r-block-margin) 0; }
+    .reveal ol, .reveal dl, .reveal ul { display: block; text-align: left; margin: 0 0 0 1.2em; }
+    .reveal li { margin-bottom: 0.5em; line-height: 1.5; }
+    .reveal li > ul, .reveal li > ol { font-size: 0.92em; color: #555; margin-left: 1.2em; margin-top: 0.3em; }
+
+    .reveal table:not(pre table) { width: 100%; margin: var(--r-block-margin) 0; font-size: 0.82em; }
+    .reveal table:not(pre table) th { background-color: #1a3c6e; color: #fff; padding: 0.5em 0.8em; font-weight: 600; border-bottom: 2px solid #1a3c6e; }
+    .reveal table:not(pre table) td { padding: 0.5em 0.8em; border-bottom: 1px solid #dee2e6; }
+    .reveal table:not(pre table) tbody tr:nth-child(even) { background-color: #f5f7fa; }
+
+    .reveal blockquote { width: 90%; margin: var(--r-block-margin) 0; padding: 0.6em 1.2em; border-left: 4px solid var(--r-link-color); background: #f0f5fa; box-shadow: none; font-style: italic; color: #444; }
+    .reveal strong, .reveal b { font-weight: 700; color: #1a3c6e; }
+    .reveal .progress { background: rgba(0,0,0,0.08); color: var(--r-link-color); height: 4px; }
+    .reveal .controls { color: var(--r-link-color); }
+    .reveal .slide-number { font-family: var(--r-main-font); font-size: 14px; color: #999; background: transparent; }
+    .reveal .small { font-size: 0.6em; color: #888; }
+    .reveal .mermaid { margin: 0.5em 0; }
+    .reveal .mermaid svg { max-height: 420px; }
+    .reveal .columns { display: flex; gap: 2em; align-items: flex-start; }
+    .reveal .columns > * { flex: 1; }
+
+    /* Custom: value card grid */
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .value-card {
+      background: #f5f7fa;
+      border-radius: 8px;
+      padding: 16px 20px;
+      border-left: 4px solid #0063B1;
+    }
+    .value-card h4 {
+      margin: 0 0 6px 0;
+      font-size: 0.85em;
+      color: #1a3c6e;
+    }
+    .value-card p {
+      margin: 0;
+      font-size: 0.72em;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    @media print { .backgrounds { background-color: var(--r-background-color); } }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- SLIDE 1: Business Value -->
+      <section>
+        <h2>AI-Assisted Semantic Model Optimization</h2>
+        <p style="margin-top:-8px; font-size:0.8em; color:#555;">
+          Inspired by <a href="https://community.fabric.microsoft.com/t5/Power-BI-Community-Blog/Automate-Power-BI-Model-Optimization-Best-Practice-Analyzer/ba-p/5000187" style="color:#0063B1;">a community BPA workflow</a> - Tabular Editor finds what's wrong. A GitHub Copilot agent fixes it - directly in your live Power BI model, with your approval.
+        </p>
+
+        <div class="value-grid">
+          <div class="value-card">
+            <h4>Tabular Editor Finds the Issues</h4>
+            <p>71 Best Practice Analyzer rules scan your semantic model for DAX performance, naming, formatting, and maintenance violations</p>
+          </div>
+          <div class="value-card">
+            <h4>Copilot Agent Fixes Them</h4>
+            <p>The AI agent reviews each Tabular Editor finding, reasons about the fix, and applies it to your live model - with your approval before every write</p>
+          </div>
+          <div class="value-card">
+            <h4>From Hours to Minutes</h4>
+            <p>A single guided workflow replaces copying between 4+ tools: analyze, fix, verify - one window</p>
+          </div>
+          <div class="value-card">
+            <h4>Built-in DAX Workspace</h4>
+            <p>Write DAX or describe what you need in plain English. Choose your agent model - GPT, Claude, Codex</p>
+          </div>
+        </div>
+
+        <p style="font-size:0.65em; color:#888; margin-top:18px;">
+          <strong>Repo:</strong> <a href="https://github.com/AlahmadiQ8/copilot-sdk-challenge">github.com/AlahmadiQ8/copilot-sdk-challenge</a>
+          &nbsp;&bull;&nbsp;
+          <strong>Demo:</strong> <a href="https://youtu.be/xYDh9zKUyOI">youtu.be/xYDh9zKUyOI</a>
+        </p>
+
+        <aside class="notes">
+          The pitch: every Power BI team has semantic models with quality issues. Optimizing them is manual and tedious.
+          This app connects to your model, finds what's wrong, and fixes it with AI - safely.
+        </aside>
+      </section>
+
+      <!-- SLIDE 2: Architecture + How it works -->
+      <section>
+        <h2>How It Works</h2>
+
+        <div class="columns">
+          <div>
+            <div class="mermaid">
+              graph TD
+                User["Power BI Developer"]
+                App["Web App"]
+                SDK["GitHub Copilot SDK<br/>AI Agent"]
+                MCP["Power BI MCP Server"]
+                TE["Tabular Editor 2<br/>Best Practice Analyzer"]
+                Model["Your Semantic Model<br/>Power BI Desktop"]
+
+                User --> App
+                App -- "AI Fix" --> SDK
+                App -- "Analyze" --> TE
+                SDK -- "reads & writes<br/>with approval" --> MCP
+                MCP --> Model
+                TE --> Model
+            </div>
+          </div>
+          <div style="font-size:0.72em;">
+            <p><strong>The workflow:</strong></p>
+            <ol style="margin-left:0.8em;">
+              <li><strong>Connect</strong> to your Power BI Desktop model</li>
+              <li><strong>Analyze</strong> - 71 best practice rules run instantly</li>
+              <li><strong>Fix</strong> - AI agent reads your model, proposes a fix, waits for your OK</li>
+              <li><strong>Verify</strong> - rerun analysis to confirm</li>
+            </ol>
+            <p style="margin-top:20px;"><strong>Built on Microsoft ecosystem:</strong></p>
+            <ul style="margin-left:0.8em;">
+              <li>GitHub Copilot SDK - enterprise AI agent</li>
+              <li>Power BI Modeling MCP Server</li>
+              <li>Tabular Editor 2 - BPA engine</li>
+              <li>Power BI Desktop</li>
+            </ul>
+          </div>
+        </div>
+
+        <aside class="notes">
+          The architecture is simple: the app orchestrates Tabular Editor for analysis and the Copilot SDK for AI fixes.
+          The MCP server is the bridge to the live semantic model. Everything is auditable.</aside>
+          All sessions persisted in SQLite for full auditability.
+        </aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.js"></script>
+
+  <script>
+    Reveal.initialize({
+      hash: true,
+      center: false,
+      slideNumber: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      controls: true,
+      progress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      pdfSeparateFragments: false,
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX, RevealMermaid]
+    });
+  </script>
+</body>
+</html>
