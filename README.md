@@ -8,6 +8,7 @@ Vibe coded slides with [reveal.js](https://revealjs.com/) using [revealjs skill]
 - [Git Worktrees: Master Parallel Development](https://alahmadiq8.github.io/slides/slides/Git_Worktrees_Guide.html)
 - [Five Tribes: The Djinns of Naqala](https://alahmadiq8.github.io/slides/slides/five-tribes.html)
 - [Playwright CLI - Token-Efficient Browser Automation for AI Coding Agents](https://alahmadiq8.github.io/slides/slides/playwright-cli.html)
+- [Power BI BPA Auto-Fix - GitHub Copilot SDK](https://alahmadiq8.github.io/slides/slides/powerbi-bpa-autofix.html)
 <!-- SLIDES-END -->
 
 ---
